@@ -8,7 +8,19 @@ An application using these scripts / tools would be able to produce the followin
 - Weighted asset pricing using the rates found in onchain DEXes
 
 Example Liquidity Pool metrics:
-- tbd
+- open, close, high, low prices of underlying assets
+- total rate of return for a liquidity pool in the specified period
+- return from fees in the specified period
+- return from the change in price of the underlying tokens in the specified period
+- HODL return, defined as the return if tokens were held (not staked in a liquidity pool) in the specified period
+- return from fees in the specified period, annualized
+- cumulative total return metrics on investment in base_currency
+- impermanent loss level - the percentage difference in portfolio value between staking tokens in an AMM and holding tokens in a wallet (fees are not taken
+into account in this calculation)
+- impermanent loss impact - The percentage difference in ROI between staking tokens in an AMM and holding tokens in a wallet (ees are not taken into
+account in this calculation)
+- volume & nubmer of transactions during the time period specified
+- reserves & poolsize
 
 ### Quickstart
 
