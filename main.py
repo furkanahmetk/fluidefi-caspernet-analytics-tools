@@ -14,9 +14,6 @@ import pandas as pd
 ## START OF APPLICATION
 ############################################################################
 
-#for u in Block.objects.all():
-#    print(f'ID: {u.block_number}')
-
 # Get data from the database using the Django ORM
 block_table = Block.objects.values()
 
