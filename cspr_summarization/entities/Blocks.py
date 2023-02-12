@@ -1,6 +1,6 @@
 from django.db import models
 
-class Block(models.Model):
+class Blocks(models.Model):
   class Meta:
     db_table = 'blocks'
   block_hash = models.CharField(max_length=64)

@@ -7,7 +7,7 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 import django
 django.setup()
 
-from cspr_summarization.entities.block import *
+from cspr_summarization.entities.Blocks import *
 import pandas as pd
 
 ############################################################################
@@ -15,7 +15,7 @@ import pandas as pd
 ############################################################################
 
 # Get data from the database using the Django ORM
-block_table = Block.objects.values()
+block_table = Blocks.objects.values()
 
 # Convert the data to a pandas DataFrame
 df_blocks = pd.DataFrame.from_records(block_table)
