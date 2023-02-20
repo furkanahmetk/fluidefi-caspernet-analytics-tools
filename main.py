@@ -7,16 +7,25 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 import django
 django.setup()
 
-from cspr_summarization.entities.Blocks import *
-import pandas as pd
-
 ############################################################################
 ## START OF APPLICATION
 ############################################################################
 
-# Get data from the database using the Django ORM
-block_table = Blocks.objects.values()
+from cspr_summarization.services.lp_block_summarizer import LPBlockSummarizer
 
-# Convert the data to a pandas DataFrame
-df_blocks = pd.DataFrame.from_records(block_table)
-print(df_blocks)
+def main():
+    # Setting block number to a recent block
+    block_number = 1393081
+    
+    # Instantiating LPBlockSummarizer
+    lpBlockSummarizer = LPBlockSummarizer(block_number)
+    
+    # Generating summary dataframes
+    df = lpBlockSummarizer.summarizer()
+    
+    # Outputting summary
+    return df
+    
+if __name__ == '__main__':
+    main()
+    
