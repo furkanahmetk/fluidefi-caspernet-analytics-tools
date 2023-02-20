@@ -4,6 +4,7 @@ from django.db import models
 class BlockSummary(models.Model):
   class Meta:
     db_table = 'block_summary'
+    unique_together = [["address", "block_number"]]
 
   id = models.AutoField(primary_key=True)
   address = models.CharField(max_length=100)

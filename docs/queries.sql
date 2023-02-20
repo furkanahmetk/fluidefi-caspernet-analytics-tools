@@ -17,5 +17,6 @@ CREATE TABLE block_summary (
     volume_0 DOUBLE PRECISION NOT NULL,
     volume_1 DOUBLE PRECISION NOT NULL,
     block_number INTEGER NOT NULL,
-    total_supply NUMERIC(155, 0) NOT NULL
+    total_supply NUMERIC(155, 0) NOT NULL,
+    CONSTRAINT unique_block_summary UNIQUE ( block_number, address )
 );
