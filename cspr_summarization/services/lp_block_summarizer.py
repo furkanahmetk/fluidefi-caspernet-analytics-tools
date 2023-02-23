@@ -27,7 +27,7 @@ class LPBlockSummarizer:
     '''
     def blockTimestampFinder(self):
         try:
-            block = Blocks.objects.filter(block_number=self.blockNumber).values('timestamp_utc').first()
+            block = Blocks.objects.using('default').filter(block_number=self.blockNumber).values('timestamp_utc').first()
             if not block:
                 logging.error('No block found for block number %s', self.blockNumber)
                 return None
@@ -41,7 +41,7 @@ class LPBlockSummarizer:
     '''
     def allPairsFinder(self):
         try:
-            all_pairs_table = UniswapV2Pair.objects.values_list('contract_address', 'token0_address', 'token1_address')
+            all_pairs_table = UniswapV2Pair.objects.using('default').values_list('contract_address', 'token0_address', 'token1_address')
             df = pd.DataFrame.from_records(all_pairs_table, columns=['address', 'token0', 'token1'])
             df['block_number'] = self.blockNumber
             timestamp = self.blockTimestampFinder()
@@ -59,9 +59,9 @@ class LPBlockSummarizer:
     '''
     def latestPairSyncEventFinder(self, address):
         try:
-            raw_pair_sync_event_table = PairSyncEvent.objects.filter(block_number__lte=self.blockNumber, address=address).values('reserve0', 'reserve1')
+            raw_pair_sync_event_table = PairSyncEvent.objects.using('default').filter(block_number__lte=self.blockNumber, address=address).values('reserve0', 'reserve1')
             df = pd.DataFrame.from_records(raw_pair_sync_event_table, index=[0])
-            return df;
+            return df
         except Exception as e:
             logging.error('Error occurred while finding sync event for block: : %s', str(e))
             return None
@@ -87,7 +87,7 @@ class LPBlockSummarizer:
     '''
     def pairMintEventFinder(self, address):
         try:
-            raw_pair_mint_event_table = PairMintEvent.objects.filter(block_number=self.blockNumber, address=address).values('amount0', 'amount1')
+            raw_pair_mint_event_table = PairMintEvent.objects.using('default').filter(block_number=self.blockNumber, address=address).values('amount0', 'amount1')
             if not raw_pair_mint_event_table:
                 logging.info(f'No mint events for pair {address}')
                 return None
@@ -124,7 +124,7 @@ class LPBlockSummarizer:
     '''
     def pairBurnEventFinder(self, address):
         try:
-            raw_pair_burn_event_table = PairBurnEvent.objects.filter(block_number=self.blockNumber, address=address).values('amount0', 'amount1')
+            raw_pair_burn_event_table = PairBurnEvent.objects.using('default').filter(block_number=self.blockNumber, address=address).values('amount0', 'amount1')
             if not raw_pair_burn_event_table:
                 logging.info(f'No burn events for pair with address {address}')
                 return None
@@ -161,7 +161,7 @@ class LPBlockSummarizer:
     '''
     def pairSwapEventFinder(self, address):
         try:
-            raw_pair_swap_event_table = PairSwapEvent.objects.filter(block_number=self.blockNumber, address=address).values('amount0_in', 'amount0_out', 'amount1_in', 'amount1_out')
+            raw_pair_swap_event_table = PairSwapEvent.objects.using('default').filter(block_number=self.blockNumber, address=address).values('amount0_in', 'amount0_out', 'amount1_in', 'amount1_out')
             if not raw_pair_swap_event_table:
                 logging.info(f'No swap events for pair with address {address}')
                 return None
@@ -173,7 +173,7 @@ class LPBlockSummarizer:
             data = [[num_swaps_0, num_swaps_1, volume_0, volume_1]]
             cols = ['num_swaps_0', 'num_swaps_1', 'volume_0', 'volume_1']
             df = pd.DataFrame(data, columns=cols)
-            return df;
+            return df
         except Exception as e:
             logging.error('Error occurred while finding swap events for block: : %s', str(e))
             return None
@@ -199,9 +199,9 @@ class LPBlockSummarizer:
     '''
     def latestTokenTotalSupplyFinder(self, address):
         try:
-            token_total_supply_table = TokenTotalSupply.objects.filter(block_number__lte=self.blockNumber, token_address=address).values('total_supply')
+            token_total_supply_table = TokenTotalSupply.objects.using('default').filter(block_number__lte=self.blockNumber, token_address=address).values('total_supply')
             df = pd.DataFrame.from_records(token_total_supply_table, index=[0])
-            return df;
+            return df
         except Exception as e:
             logging.error('Error occurred while finding the token total supply for pair: {address}', str(e))
             return None
@@ -229,7 +229,7 @@ class LPBlockSummarizer:
         df.fillna(0, inplace=True)
         try:
             for index, row in df.iterrows():
-                block_summary, created_block_summary = BlockSummary.objects.update_or_create(
+                block_summary, created_block_summary = BlockSummary.objects.using('writer').update_or_create(
                     **row.to_dict(),
                 )
             return block_summary,created_block_summary
