@@ -37,6 +37,14 @@ class TestBlockSummarizer(unittest.TestCase):
     sync_result = lpBlockSummarizer.pairBurnEventChecker()
 
     self.assertIsNotNone(sync_result)
+  
+  def test_swap_summarizer(self):
+    block_number=1393081
+
+    lpBlockSummarizer = LPBlockSummarizer(block_number)
+    sync_result = lpBlockSummarizer.pairSwapEventChecker()
+
+    self.assertIsNotNone(sync_result)
 
 if __name__ == '__main__':  
   unittest.main()
