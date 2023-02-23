@@ -221,9 +221,17 @@ class LPBlockSummarizer:
         df = pd.concat([pairs, *merged_list], axis=1)
         return df
     
+    '''
+    Cleans up the dataframe and saves to datastore
+    '''   
     def summarizer(self):
         df = self.summary
         df.fillna(0, inplace=True)
-        blcok_summary_table = [BlockSummary(**vals) for vals in df.to_dict('records')]
-        BlockSummary.objects.bulk_create(blcok_summary_table)
-        return df
+        try:
+            for index, row in df.iterrows():
+                block_summary, created_block_summary = BlockSummary.objects.update_or_create(
+                    **row.to_dict(),
+                )
+            return block_summary,created_block_summary
+        except:
+            logging.info(f"Couldn't save block_summary for {row}")
