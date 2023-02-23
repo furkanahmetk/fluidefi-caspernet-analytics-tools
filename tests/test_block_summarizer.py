@@ -26,25 +26,25 @@ class TestBlockSummarizer(unittest.TestCase):
     block_number=1393081
 
     lpBlockSummarizer = LPBlockSummarizer(block_number)
-    sync_result = lpBlockSummarizer.pairMintEventChecker()
+    mint_result = lpBlockSummarizer.pairMintEventChecker()
 
-    self.assertIsNotNone(sync_result)
+    self.assertIsNotNone(mint_result)
   
   def test_burn_summarizer(self):
     block_number=1393081
 
     lpBlockSummarizer = LPBlockSummarizer(block_number)
-    sync_result = lpBlockSummarizer.pairBurnEventChecker()
+    burn_result = lpBlockSummarizer.pairBurnEventChecker()
 
-    self.assertIsNotNone(sync_result)
+    self.assertIsNotNone(burn_result)
   
   def test_swap_summarizer(self):
     block_number=1393081
 
     lpBlockSummarizer = LPBlockSummarizer(block_number)
-    sync_result = lpBlockSummarizer.pairSwapEventChecker()
+    swap_result = lpBlockSummarizer.pairSwapEventChecker()
 
-    self.assertIsNotNone(sync_result)
+    self.assertIsNotNone(swap_result)
 
 if __name__ == '__main__':  
   unittest.main()
