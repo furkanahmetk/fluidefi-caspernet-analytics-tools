@@ -8,8 +8,6 @@ class BlockSummary(models.Model):
 
   id = models.AutoField(primary_key=True)
   address = models.CharField(max_length=100)
-  token0 = models.CharField(max_length=100)
-  token1 = models.CharField(max_length=100)
   block_timestamp_utc = models.DateTimeField()
   reserve0 = models.FloatField()
   reserve1 = models.FloatField()

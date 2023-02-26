@@ -1,8 +1,6 @@
 CREATE TABLE block_summary (
     id SERIAL PRIMARY KEY,
     address VARCHAR(100) NOT NULL,
-    token0 VARCHAR(100) NOT NULL,
-    token1 VARCHAR(100) NOT NULL,
     block_timestamp_utc TIMESTAMP WITH TIME ZONE NOT NULL,
     reserve0 DOUBLE PRECISION NOT NULL,
     reserve1 DOUBLE PRECISION NOT NULL,

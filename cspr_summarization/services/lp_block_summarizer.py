@@ -21,7 +21,7 @@ class LPBlockSummarizer:
         self.mints = self.pairMintEventChecker()
         self.burns = self.pairBurnEventChecker()
         self.swaps = self.pairSwapEventChecker()
-        self.summary = self.tokenTotalSupplyFinder()
+        self.summary = self.tokenTotalSupplyChecker()
     '''
     Finds the timestamp of the block and returns the timestamp as a scalar value.
     '''
@@ -37,12 +37,12 @@ class LPBlockSummarizer:
             return None
         
     '''
-    Finds all of the pairs stored in the datastore and returns the pair, blockNumber, timestamp, token0, and token1 as a dataframe
+    Finds all of the pairs stored in the datastore and returns the pair, blockNumber, and timestamp as a dataframe
     '''
     def allPairsFinder(self):
         try:
-            all_pairs_table = UniswapV2Pair.objects.using('default').values_list('contract_address', 'token0_address', 'token1_address')
-            df = pd.DataFrame.from_records(all_pairs_table, columns=['address', 'token0', 'token1'])
+            all_pairs_table = UniswapV2Pair.objects.using('default').values_list('contract_address')
+            df = pd.DataFrame.from_records(all_pairs_table, columns=['address'])
             df['block_number'] = self.blockNumber
             timestamp = self.blockTimestampFinder()
             if not timestamp:
@@ -209,7 +209,7 @@ class LPBlockSummarizer:
     '''
     Checks the datastore for the latest token total supply record for each pair, and concats the two dataframes. 
     '''
-    def tokenTotalSupplyFinder(self):
+    def tokenTotalSupplyChecker(self):
         pairs = self.swaps
         merged_list = []
         for address in pairs['address']:
@@ -227,10 +227,16 @@ class LPBlockSummarizer:
     def summarizer(self):
         df = self.summary
         df.fillna(0, inplace=True)
+        columns_to_check = ['total_supply', 'reserve0', 'reserve1', 'num_swaps_0', 'num_swaps_1', 'num_mints', 'num_burns', 'mints_0', 'mints_1', 'burns_0', 'burns_1', 'volume_0', 'volume_1']
+        for col in columns_to_check:
+            if col not in df.columns:
+                df[col] = 0
         try:
             for index, row in df.iterrows():
                 block_summary, created_block_summary = BlockSummary.objects.using('writer').update_or_create(
-                    **row.to_dict(),
+                    address=row['address'],
+                    block_number=row['block_number'],
+                    defaults=row.to_dict(),
                 )
             return block_summary,created_block_summary
         except:
