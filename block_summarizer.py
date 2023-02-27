@@ -12,7 +12,7 @@ from cspr_summarization.entities.BlockHours import BlockHours
 ## START OF APPLICATION
 ############################################################################
 
-from cspr_summarization.services.lp_block_summarizer import LPBlockSummarizer
+from cspr_summarization.services.lp_block_summarizer.lp_block_summarizer import LPBlockSummarizer
 
 def main():
     latest_block_summary = BlockSummary.objects.using('default').values('block_number').latest('block_number')['block_number']

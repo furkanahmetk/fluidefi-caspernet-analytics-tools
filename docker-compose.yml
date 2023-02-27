@@ -1,0 +1,48 @@
+version: "3.7"
+
+networks:
+  fluidefi-net:
+    driver: bridge
+
+services:
+  block_summarizer:
+    image: fluidefi-block_summarizer
+    build:
+      context: ./
+      dockerfile: cspr_summarization/services/lp_block_summarizer/Dockerfile
+    restart: always
+    container_name: fluidefi-block_summarizer
+    networks:
+      - fluidefi-net
+    environment:
+      - READ_DB_CONNECTION_HOST=host.docker.internal
+      - READ_DB_CONNECTION_DATABASE=casper_aggregator_db
+      - READ_DB_CONNECTION_USERNAME=root
+      - READ_DB_CONNECTION_PASSWORD=password
+      - READ_DB_CONNECTION_PORT=5432
+      - WRITE_DB_CONNECTION_HOST=host.docker.internal
+      - WRITE_DB_CONNECTION_DATABASE=casper_aggregator_db
+      - WRITE_DB_CONNECTION_USERNAME=root
+      - WRITE_DB_CONNECTION_PASSWORD=password
+      - WRITE_DB_CONNECTION_PORT=5432
+
+  hourly_summarizer:
+    image: fluidefi-hourly_summarizer
+    build:
+      context: ./
+      dockerfile: cspr_summarization/services/lp_hourly_summarizer/
+    restart: always
+    container_name: fluidefi-block_summarizer
+    networks:
+      - fluidefi-net
+    environment:
+      - READ_DB_CONNECTION_HOST=host.docker.internal
+      - READ_DB_CONNECTION_DATABASE=casper_aggregator_db
+      - READ_DB_CONNECTION_USERNAME=root
+      - READ_DB_CONNECTION_PASSWORD=password
+      - READ_DB_CONNECTION_PORT=5432
+      - WRITE_DB_CONNECTION_HOST=host.docker.internal
+      - WRITE_DB_CONNECTION_DATABASE=casper_aggregator_db
+      - WRITE_DB_CONNECTION_USERNAME=root
+      - WRITE_DB_CONNECTION_PASSWORD=password
+      - WRITE_DB_CONNECTION_PORT=5432
