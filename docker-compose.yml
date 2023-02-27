@@ -17,13 +17,13 @@ services:
     environment:
       - READ_DB_CONNECTION_HOST=host.docker.internal
       - READ_DB_CONNECTION_DATABASE=casper_aggregator_db
-      - READ_DB_CONNECTION_USERNAME=postgres
-      - READ_DB_CONNECTION_PASSWORD=postgres
+      - READ_DB_CONNECTION_USERNAME=root
+      - READ_DB_CONNECTION_PASSWORD=password
       - READ_DB_CONNECTION_PORT=5432
       - WRITE_DB_CONNECTION_HOST=host.docker.internal
       - WRITE_DB_CONNECTION_DATABASE=casper_aggregator_db
-      - WRITE_DB_CONNECTION_USERNAME=postgres
-      - WRITE_DB_CONNECTION_PASSWORD=postgres
+      - WRITE_DB_CONNECTION_USERNAME=root
+      - WRITE_DB_CONNECTION_PASSWORD=password
       - WRITE_DB_CONNECTION_PORT=5432
 
   hourly_summarizer:
@@ -38,11 +38,11 @@ services:
     environment:
       - READ_DB_CONNECTION_HOST=host.docker.internal
       - READ_DB_CONNECTION_DATABASE=casper_aggregator_db
-      - READ_DB_CONNECTION_USERNAME=postgres
-      - READ_DB_CONNECTION_PASSWORD=postgres
+      - READ_DB_CONNECTION_USERNAME=root
+      - READ_DB_CONNECTION_PASSWORD=password
       - READ_DB_CONNECTION_PORT=5432
       - WRITE_DB_CONNECTION_HOST=host.docker.internal
       - WRITE_DB_CONNECTION_DATABASE=casper_aggregator_db
-      - WRITE_DB_CONNECTION_USERNAME=postgres
-      - WRITE_DB_CONNECTION_PASSWORD=postgres
+      - WRITE_DB_CONNECTION_USERNAME=root
+      - WRITE_DB_CONNECTION_PASSWORD=password
       - WRITE_DB_CONNECTION_PORT=5432
