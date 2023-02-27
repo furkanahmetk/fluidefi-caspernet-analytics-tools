@@ -1,12 +1,5 @@
 import sys
-sys.dont_write_bytecode = True
-
-# Django specific settings
-import os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
-import django
-django.setup()
-
+sys.path.insert(0, "../")
 import unittest
 import pandas as pd
 from decimal import Decimal
@@ -14,7 +7,7 @@ import pytz
 from datetime import datetime, timedelta
 
 
-from cspr_summarization.services.lp_hourly_summarizer import LpHourlySummarizer
+from mocks.hourly_summarizer import LpHourlySummarizer
 
 
 class TestHourlySummarizer(unittest.TestCase):
