@@ -39,13 +39,13 @@ python3 -m unittest
 
 ### Documentation:
 
-Full documentation can be found in the [docs](https://github.com/fluidefi/fluidefi-caspernet-aggregator-tools/blob/master/docs/) folder.
+Full documentation can be found in the [docs](https://github.com/fluidefi/fluidefi-caspernet-analytics-tools/blob/main/docs/) folder.
 
-* [Requirements](https://github.com/fluidefi/fluidefi-caspernet-aggregator-tools/blob/master/docs/REQUIREMENTS.md)
-* [Installation](https://github.com/fluidefi/fluidefi-caspernet-aggregator-tools/blob/master/docs/INSTALLATION.md)
-* [Usage Overview](https://github.com/fluidefi/fluidefi-caspernet-aggregator-tools/blob/master/docs/USAGE_OVERVIEW.md)
+* [Requirements](https://github.com/fluidefi/fluidefi-caspernet-analytics-tools/blob/main/docs/REQUIREMENTS.md)
+* [Installation](https://github.com/fluidefi/fluidefi-caspernet-analytics-tools/blob/main/docs/INSTALLATION.md)
+* [Usage Overview](https://github.com/fluidefi/fluidefi-caspernet-analytics-tools/blob/main/docs/USAGE_OVERVIEW.md)
 
-The project was initiated with DEVxDAO proposal [#451](https://portal.devxdao.com/app/proposal/451)
+This project was initiated with DEVxDAO proposal [#451](https://portal.devxdao.com/app/proposal/451)
 
 Based on [casper.network](https://casper.network/en/network)
 
@@ -55,15 +55,15 @@ Based on [casper.network](https://casper.network/en/network)
 
 ### Contributing
 
-Please see [Contributing Guidelines](https://github.com/fluidefi/fluidefi-caspernet-aggregator-tools/blob/master/CONTRIBUTING.md).
+Please see [Contributing Guidelines](https://github.com/fluidefi/fluidefi-caspernet-aggregator-tools/blob/main/CONTRIBUTING.md).
 
 ### Code of Conduct
 
-Please see [Code of Conduct](https://github.com/fluidefi/fluidefi-caspernet-aggregator-tools/blob/master/CODE_OF_CONDUCT.md).
+Please see [Code of Conduct](https://github.com/fluidefi/fluidefi-caspernet-aggregator-tools/blob/main/CODE_OF_CONDUCT.md).
 
 ### License
 
-This project is licensed under [MIT license](https://github.com/fluidefi/fluidefi-caspernet-aggregator-tools/blob/master/LICENSE.md).
+This project is licensed under [MIT license](https://github.com/fluidefi/fluidefi-caspernet-aggregator-tools/blob/main/LICENSE.md).
 
 ### About us:
 * [FLUIDEFI.COM](https://fluidefi.com/)
