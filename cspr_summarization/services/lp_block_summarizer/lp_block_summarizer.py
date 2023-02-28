@@ -59,8 +59,10 @@ class LPBlockSummarizer:
     '''
     def latestPairSyncEventFinder(self, address):
         try:
-            raw_pair_sync_event_table = PairSyncEvent.objects.using('default').filter(block_number__lte=self.blockNumber, address=address).values('reserve0', 'reserve1')
-            df = pd.DataFrame.from_records(raw_pair_sync_event_table, index=[0])
+            raw_pair_sync_event_table = PairSyncEvent.objects.using('default').filter(block_number__lte=self.blockNumber, address=address).values('reserve0', 'reserve1').order_by('-block_number').first()
+            if not raw_pair_sync_event_table:
+                return None
+            df = pd.DataFrame.from_dict([raw_pair_sync_event_table])
             return df
         except Exception as e:
             logging.error('Error occurred while finding sync event for block: : %s', str(e))
@@ -199,8 +201,10 @@ class LPBlockSummarizer:
     '''
     def latestTokenTotalSupplyFinder(self, address):
         try:
-            token_total_supply_table = TokenTotalSupply.objects.using('default').filter(block_number__lte=self.blockNumber, token_address=address).values('total_supply')
-            df = pd.DataFrame.from_records(token_total_supply_table, index=[0])
+            token_total_supply_table = TokenTotalSupply.objects.using('default').filter(block_number__lte=self.blockNumber, token_address=address).values('total_supply').order_by('-block_number').first()
+            if not token_total_supply_table:
+                return None
+            df = pd.DataFrame.from_dict([token_total_supply_table])
             return df
         except Exception as e:
             logging.error('Error occurred while finding the token total supply for pair: {address}', str(e))
