@@ -8,7 +8,8 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
 # installing dependecies for installing python packages
-RUN apt-get update && apt-get install 
+RUN apt update -y && apt install -y build-essential libpq-dev
+RUN pip install psycopg2-binary --no-binary psycopg2-binary
 
 
 # installing packages
@@ -53,6 +54,9 @@ ENV WRITE_DB_CONNECTION_PASSWORD=$WRITE_DB_CONNECTION_PASSWORD
 
 ARG WRITE_DB_CONNECTION_PORT
 ENV WRITE_DB_CONNECTION_PORT=$WRITE_DB_CONNECTION_PORT
+
+ARG FORCE_RECALCULATE_START_HOUR
+ENV FORCE_RECALCULATE_START_HOUR=$FORCE_RECALCULATE_START_HOUR
 
 # running block summarizer
 ENTRYPOINT ["python3","hourly_summarizer.py"]
