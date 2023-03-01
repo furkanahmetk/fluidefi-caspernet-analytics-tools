@@ -16,7 +16,7 @@ Open your preferred database viewer and explore that the different tables have d
 ## Actions to do
 - clone repository: `git clone https://github.com/fluidefi/fluidefi-caspernet-analytics-tools.git`
 - change the working directory: `cd fluidefi-caspernet-analytics-tools`
-- rename the `.env.example` file to `.env`
+- copy configuration example to new file `cp .env.example .env`
 - replace the envirnoment variable values (that you will find inside the `.env` file) with the credentials of the running data base.
 - start the services: `docker-compose up`: This command will create the database tables needed on this service and then starts the services
 
