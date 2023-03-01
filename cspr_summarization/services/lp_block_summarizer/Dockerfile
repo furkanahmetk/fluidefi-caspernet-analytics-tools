@@ -19,6 +19,7 @@ RUN [ "python3", "-m", "pip", "install", "-r", "requirements.txt" ]
 
 # copying files & folders
 COPY ./cspr_summarization/entities ./cspr_summarization/entities
+COPY ./cspr_summarization/migrations ./cspr_summarization/migrations
 COPY ./cspr_summarization/services/lp_block_summarizer ./cspr_summarization/services/lp_block_summarizer
 COPY ./manage.py ./manage.py
 COPY ./settings.py ./settings.py
@@ -54,7 +55,8 @@ ENV WRITE_DB_CONNECTION_PASSWORD=$WRITE_DB_CONNECTION_PASSWORD
 ARG WRITE_DB_CONNECTION_PORT
 ENV WRITE_DB_CONNECTION_PORT=$WRITE_DB_CONNECTION_PORT
 
-# running block summarizer
-ENTRYPOINT ["python3","block_summarizer.py"]
+#  Run Migrations and then start the service
+ENTRYPOINT ["/bin/sh", "-c", "python3 manage.py migrate cspr_summarization && python3 block_summarizer.py" ] 
+
 
 

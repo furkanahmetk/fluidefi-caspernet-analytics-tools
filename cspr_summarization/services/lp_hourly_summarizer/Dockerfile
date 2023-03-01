@@ -20,6 +20,7 @@ RUN [ "python3", "-m", "pip", "install", "-r", "requirements.txt" ]
 
 # copying files & folders
 COPY ./cspr_summarization/entities ./cspr_summarization/entities
+COPY ./cspr_summarization/migrations ./cspr_summarization/migrations
 COPY ./cspr_summarization/services/lp_hourly_summarizer ./cspr_summarization/services/lp_hourly_summarizer
 COPY ./manage.py ./manage.py
 COPY ./settings.py ./settings.py
@@ -58,7 +59,7 @@ ENV WRITE_DB_CONNECTION_PORT=$WRITE_DB_CONNECTION_PORT
 ARG FORCE_RECALCULATE_START_HOUR
 ENV FORCE_RECALCULATE_START_HOUR=$FORCE_RECALCULATE_START_HOUR
 
-# running block summarizer
-ENTRYPOINT ["python3","hourly_summarizer.py"]
+#  Run Migrations and then start the service
+ENTRYPOINT ["/bin/sh", "-c", "python3 manage.py migrate cspr_summarization && python3 hourly_summarizer.py" ]
 
 
