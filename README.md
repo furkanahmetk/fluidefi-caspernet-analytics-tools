@@ -23,7 +23,7 @@ account in this calculation)
 - reserves & poolsize
 
 ### Quickstart (for a developer)
-For a non developer you can check how to run the whole services with only one command [here](./docs/USAGE_OVERVIEW.md).
+For QA purposes you can check [here](./docs/USAGE_OVERVIEW.md) how to run the whole services with only one command.
 1. Clone the repo
 ```
 git clone https://github.com/fluidefi/fluidefi-caspernet-analytics-tools.git
