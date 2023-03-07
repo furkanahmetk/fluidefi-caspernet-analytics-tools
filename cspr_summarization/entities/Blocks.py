@@ -12,7 +12,7 @@ class Blocks(models.Model):
   era_end = models.BooleanField()
   timestamp_utc = models.DateTimeField()
   era_id = models.IntegerField()
-  block_number = models.AutoField(primary_key=True)
+  block_number = models.IntegerField(primary_key=True)
   protocol_version = models.CharField(max_length=20)
   proposer = models.CharField(max_length=68)
   deploy_hashes = models.TextField()

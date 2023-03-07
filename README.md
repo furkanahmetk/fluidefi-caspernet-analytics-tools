@@ -22,18 +22,75 @@ account in this calculation)
 - volume & nubmer of transactions during the time period specified
 - reserves & poolsize
 
-### Quickstart
+### Quickstart (for a developer)
+For QA purposes you can check [here](./docs/USAGE_OVERVIEW.md) how to run the whole services with only one command.
+1. Clone the repo
+```
+git clone https://github.com/fluidefi/fluidefi-caspernet-analytics-tools.git
+```
+2. Navigate to the direcotry of the project
+```
+cd fluidefi-caspernet-analytics-tools
+```
+3. Create a python virtual environment, activate the virtual environment, and install pip.
+```
+python3 -m venv fl_agg_env
+source fl_agg_env/bin/activate
 
-- todo
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3 get-pip.py
+
+python3 -m pip install -r requirements.txt
+```
+4. Install the required Python packages using pip
+``` 
+pip install -r requirements.txt
+```
+5. Set environment variables for a database connection or update `settings.py` with database connection information.
+
+For example:
+```
+DATABASES = {
+    "default": {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'casper_database',
+        'USER': 'postegres',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': 5432,
+    },
+    "writer": {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'casper_database',
+        'USER': 'postegres',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': 5432,
+    }
+}
+```
+
+6. Run migrations to create the tables
+``` 
+python manage.py migrate
+```
+or alternatively create them manually by running [this script](./docs/queries.sql).
 
 ### Usage
 
-- todo
+1. Run one or both of the services
+``` 
+python block_summarizer.py
+```
+```
+python hourly_summarizer.py
+```
 
 ### Testing:
 
-If you clone this repository directly, you can run the included unit tests with the npm command:
+If you clone this repository directly, you can run the included unit tests with the python3 command:
 ```
+cd tests/unit
 python3 -m unittest
 ```
 
@@ -41,9 +98,9 @@ python3 -m unittest
 
 Full documentation can be found in the [docs](https://github.com/fluidefi/fluidefi-caspernet-aggregator-tools/blob/master/docs/) folder.
 
-* [Requirements](https://github.com/fluidefi/fluidefi-caspernet-aggregator-tools/blob/master/docs/REQUIREMENTS.md)
-* [Installation](https://github.com/fluidefi/fluidefi-caspernet-aggregator-tools/blob/master/docs/INSTALLATION.md)
-* [Usage Overview](https://github.com/fluidefi/fluidefi-caspernet-aggregator-tools/blob/master/docs/USAGE_OVERVIEW.md)
+* [Requirements](./docs/REQUIREMENTS.md)
+* [Installation](./docs/INSTALLATION.md)
+* [Usage Overview](./docs/USAGE_OVERVIEW.md)
 
 The project was initiated with DEVxDAO proposal [#451](https://portal.devxdao.com/app/proposal/451)
 
