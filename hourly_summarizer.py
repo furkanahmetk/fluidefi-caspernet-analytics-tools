@@ -23,14 +23,18 @@ def run_hourly_summarizer(start_hour_param = None):
 
   # Normal hourly run
   if start_hour_param is None:
-    last_hourly_block_timestamp = BlockHours.objects.values('hourly_timestamp_utc').order_by('-hourly_timestamp_utc').first()['hourly_timestamp_utc']
-    # try to get the last houly data timestamp
     try:
-      last_end_hour = HourlyData.objects.values('close_timestamp_utc').order_by('-close_timestamp_utc').first()['close_timestamp_utc']
-    # in case the table is empty (this is possible when the service run for the first time)!
-    # then get the min hourly data timestamp (from BlockHours)
+      last_hourly_block_timestamp = BlockHours.objects.values('hourly_timestamp_utc').order_by('-hourly_timestamp_utc').first()['hourly_timestamp_utc']
+      # try to get the last houly data timestamp
+      try:
+        last_end_hour = HourlyData.objects.values('close_timestamp_utc').order_by('-close_timestamp_utc').first()['close_timestamp_utc']
+      # in case the table is empty (this is possible when the service run for the first time)!
+      # then get the min hourly data timestamp (from BlockHours)
+      except:
+        last_end_hour = BlockHours.objects.values('hourly_timestamp_utc').order_by('hourly_timestamp_utc').first()['hourly_timestamp_utc']
     except:
-      last_end_hour = BlockHours.objects.values('hourly_timestamp_utc').order_by('hourly_timestamp_utc').first()['hourly_timestamp_utc']
+      logging.warning('❌ The service could not be started Please populate BlockHours data before running the service as no data was found on the BlockHours table')
+      return
 
     # Set microseconds, seconds, & minutes to 0
     last_end_hour = last_end_hour.replace(microsecond=0, second=0, minute=0)
