@@ -32,11 +32,45 @@ git clone https://github.com/fluidefi/fluidefi-caspernet-analytics-tools.git
 ```
 cd fluidefi-caspernet-analytics-tools
 ```
-3. Install the required Python packages using pip
+3. Create a python virtual environment, activate the virtual environment, and install pip.
+```
+python3 -m venv fl_agg_env
+source fl_agg_env/bin/activate
+
+curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+python3 get-pip.py
+
+python3 -m pip install -r requirements.txt
+```
+4. Install the required Python packages using pip
 ``` 
 pip install -r requirements.txt
 ```
-4. Run migrations to create the tables
+5. Set environment variables for a database connection or update `settings.py` with database connection information.
+
+For example:
+```
+DATABASES = {
+    "default": {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'casper_database',
+        'USER': 'postegres',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': 5432,
+    },
+    "writer": {
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'casper_database',
+        'USER': 'postegres',
+        'PASSWORD': 'password',
+        'HOST': 'localhost',
+        'PORT': 5432,
+    }
+}
+```
+
+6. Run migrations to create the tables
 ``` 
 python manage.py migrate
 ```
