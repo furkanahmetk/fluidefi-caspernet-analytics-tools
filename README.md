@@ -19,7 +19,7 @@ Example Liquidity Pool metrics:
 into account in this calculation)
 - impermanent loss impact - The percentage difference in ROI between staking tokens in an AMM and holding tokens in a wallet (ees are not taken into
 account in this calculation)
-- volume & nubmer of transactions during the time period specified
+- volume & number of transactions during the time period specified
 - reserves & poolsize
 
 ### Quickstart (for a developer)
@@ -28,7 +28,7 @@ For QA purposes you can check [here](./docs/USAGE_OVERVIEW.md) how to run the wh
 ```
 git clone https://github.com/fluidefi/fluidefi-caspernet-analytics-tools.git
 ```
-2. Navigate to the direcotry of the project
+2. Navigate to the directory of the project
 ```
 cd fluidefi-caspernet-analytics-tools
 ```
