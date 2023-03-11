@@ -33,8 +33,11 @@ def main():
     
     if latest_block_hour >= latest_block_summary:
         for i in range(latest_block_summary, latest_block_hour + 1):
-            lpBlockSummarizer = LPBlockSummarizer(i)
-            lpBlockSummarizer.summarizer()
+            try:
+                lpBlockSummarizer = LPBlockSummarizer(i)
+                lpBlockSummarizer.summarizer()
+            except:
+                logging.error(f'No block found for block number {i}')
 
 if __name__ == '__main__':
     schedule.every(1).minutes.do(main)
