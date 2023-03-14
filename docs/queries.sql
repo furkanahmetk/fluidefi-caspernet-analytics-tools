@@ -1,5 +1,5 @@
 -- BlockSummary table
-CREATE TABLE block_summary (
+CREATE TABLE IF NOT EXISTS block_summary (
     id SERIAL PRIMARY KEY,
     address VARCHAR(100) NOT NULL,
     block_timestamp_utc TIMESTAMP WITH TIME ZONE NOT NULL,
@@ -21,7 +21,7 @@ CREATE TABLE block_summary (
 );
 
 -- HourlyData table
-create table hourly_data
+CREATE TABLE IF NOT EXISTS hourly_data
 (
     id                    serial primary key,
     address               varchar(100)             not null,
@@ -43,4 +43,37 @@ create table hourly_data
     close_lp_token_supply numeric(155)             not null,
     constraint address_timestamp_unique
         unique (address, open_timestamp_utc, close_timestamp_utc)
+);
+
+-- Summary Type table
+CREATE TABLE IF NOT EXISTS summary_type (
+    id                  SERIAL PRIMARY KEY,
+    summary_description VARCHAR(100),
+    data_frequency      VARCHAR(3)
+);
+CREATE UNIQUE INDEX unq_summary_type_df ON summary_type ( data_frequency );
+
+CREATE TABLE "public".lp_summary (
+    id                      SERIAL PRIMARY KEY,
+    liquidity_pool_id       integer,
+	summary_type            integer,
+	open_timestamp_utc      timestamptz,
+    close_timestamp_utc     timestamptz,
+	total_period_return     double precision,
+	yield_on_lp_fees        double precision,
+	price_change_ret        double precision,
+	hodl_return             double precision,
+    fees_apy                double precision,
+    total_apy               double precision,
+    impermanent_loss_level  double precision,
+    impermanent_loss_impact double precision,
+    volume                  double precision,
+    transactions_period     integer,
+    poolsize                double precision,
+    open_reserve_0          double precision,
+    open_reserve_1          double precision,
+    close_reserve_0         double precision,
+    close_reserve_1         double precision,
+    constraint lp_summary_close
+        unique (liquidity_pool_id, summary_type, close_timestamp_utc)
 );
