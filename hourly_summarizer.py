@@ -32,6 +32,7 @@ def run_hourly_summarizer(start_hour_param = None):
       # then get the min hourly data timestamp (from BlockHours)
       except:
         last_end_hour = BlockHours.objects.values('hourly_timestamp_utc').order_by('hourly_timestamp_utc').first()['hourly_timestamp_utc']
+        last_end_hour = last_end_hour - timedelta(hours=1)
     except:
       logging.warning('❌ The service could not be started Please populate BlockHours data before running the service as no data was found on the BlockHours table')
       return
@@ -52,11 +53,11 @@ def run_hourly_summarizer(start_hour_param = None):
     last_hourly_block_timestamp = next_start_hour - timedelta(hours=1)
 
   # Already summarized data for this hour 
-  if (next_start_hour > last_hourly_block_timestamp) and (not forced_to_run):
+  if (next_start_hour >= last_hourly_block_timestamp) and (not forced_to_run):
     logging.info(f'✅ Hourly Summarization has already been run for the time range: {next_start_hour} - {next_end_hour}')
 
   # While not done with all the missed past hours Do ...
-  while (last_hourly_block_timestamp >= next_start_hour) or (forced_to_run):
+  while (last_hourly_block_timestamp > next_start_hour) or (forced_to_run):
 
     summarizer = LpHourlySummarizer(next_start_hour, next_end_hour)
     # Initilize Data (all column at 0)
