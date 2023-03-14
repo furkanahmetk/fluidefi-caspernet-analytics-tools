@@ -51,3 +51,26 @@ services:
       - WRITE_DB_CONNECTION_PASSWORD=$WRITE_DB_CONNECTION_PASSWORD
       - WRITE_DB_CONNECTION_PORT=$WRITE_DB_CONNECTION_PORT
       - FORCE_RECALCULATE_START_HOUR=$FORCE_RECALCULATE_START_HOUR
+
+  postgres:
+    image: postgres
+    ports:
+      - 5433:5432
+    networks:
+      - fluidefi-net
+    restart: on-failure
+    container_name: django-db
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${API_WRITE_DB_CONNECTION_USERNAME}
+      POSTGRES_PASSWORD: ${API_WRITE_DB_CONNECTION_PASSWORD}
+      POSTGRES_DATABASE: ${API_WRITE_DB_CONNECTION_DATABASE}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${WRITE_DB_CONNECTION_USERNAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - fl-pgdata:/var/lib/postgresql/data
+volumes:
+  fl-pgdata:
