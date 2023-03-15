@@ -37,7 +37,7 @@ def main():
                 lpBlockSummarizer = LPBlockSummarizer(i)
                 lpBlockSummarizer.summarizer()
             except:
-                logging.error(f'No block found for block number {i}')
+                logging.error(f'Failed to summarize for block {i}')
 
 if __name__ == '__main__':
     schedule.every(1).minutes.do(main)

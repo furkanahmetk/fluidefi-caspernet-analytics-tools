@@ -11,8 +11,7 @@ from decimal import Decimal
 import pandas as pd
 import numpy as np
 import logging
-logging.basicConfig(level=logging.INFO)
-
+logging.basicConfig(level=logging.WARN)
 class LPBlockSummarizer:
     def __init__(self, blockNumber):
         self.blockNumber = blockNumber
@@ -37,12 +36,13 @@ class LPBlockSummarizer:
             return None
         
     '''
-    Finds all of the pairs stored in the datastore and returns the pair, blockNumber, and timestamp as a dataframe
+    Finds all of the pairs stored in the datastore at the current block height and returns the pair, blockNumber, and timestamp as a dataframe
     '''
     def allPairsFinder(self):
         try:
-            all_pairs_table = UniswapV2Pair.objects.using('default').values_list('contract_address')
-            df = pd.DataFrame.from_records(all_pairs_table, columns=['address'])
+            all_pairs_table = UniswapV2Pair.objects.using('default').filter(first_mint_event_block_number__lte=self.blockNumber).values('contract_address')
+            df = pd.DataFrame.from_records(all_pairs_table)
+            df = df.rename(columns={'contract_address': 'address'})
             df['block_number'] = self.blockNumber
             timestamp = self.blockTimestampFinder()
             if not timestamp:
@@ -59,7 +59,7 @@ class LPBlockSummarizer:
     '''
     def latestPairSyncEventFinder(self, address):
         try:
-            raw_pair_sync_event_table = PairSyncEvent.objects.using('default').filter(block_number__lte=self.blockNumber, address=address).values('reserve0', 'reserve1').order_by('-block_number').first()
+            raw_pair_sync_event_table = PairSyncEvent.objects.using('default').filter(block_number__lte=self.blockNumber, address=address).values('address', 'reserve0', 'reserve1').order_by('-block_number').first()
             if not raw_pair_sync_event_table:
                 return None
             df = pd.DataFrame.from_dict([raw_pair_sync_event_table])
@@ -74,31 +74,38 @@ class LPBlockSummarizer:
     def pairSyncEventChecker(self):
         if self.pairs.empty:
             return None
-        merged_list = []
+        dfs = []
         for address in self.pairs['address']:
             try:
                 df = self.latestPairSyncEventFinder(address)
-                merged_list.append(df)
+                if df is not None:
+                    dfs.append(df)
             except:
-                logging.info(f"No record for pair with address of {address}")
-        df = pd.concat([self.pairs, *merged_list], axis=1)
-        return df
+                logging.warn(f"Failed to find sync event for address {address}")
+        if not dfs:
+            return self.pairs
+        else:
+            merged_df = pd.concat(dfs)
+        return pd.merge(self.pairs, merged_df, on='address', how='outer')
 
     '''
     Finds the mint event of the pair at the current height and returns the number of mint events, amount added in token0, and token1 for the specific pair as a dataframe
     '''
     def pairMintEventFinder(self, address):
         try:
-            raw_pair_mint_event_table = PairMintEvent.objects.using('default').filter(block_number=self.blockNumber, address=address).values('amount0', 'amount1')
+            raw_pair_mint_event_table = PairMintEvent.objects.using('default').filter(block_number=self.blockNumber, address=address).values('address','amount0', 'amount1')
             if not raw_pair_mint_event_table:
                 logging.info(f'No mint events for pair {address}')
-                return None
+                data = [[address, 0, 0, 0]]
+                cols = ['address','num_mints', 'mints_0', 'mints_1']
+                df = pd.DataFrame(data, columns=cols)
+                return df
             df_raw_mints = pd.DataFrame.from_records(raw_pair_mint_event_table)
             num_mints = len(df_raw_mints)
             mints_0 = Decimal(np.sum(df_raw_mints['amount0'].to_numpy()))
             mints_1 = Decimal(np.sum(df_raw_mints['amount1'].to_numpy()))
-            data = [[num_mints, mints_0, mints_1]]
-            cols = ['num_mints', 'mints_0', 'mints_1']
+            data = [[address, num_mints, mints_0, mints_1]]
+            cols = ['address','num_mints', 'mints_0', 'mints_1']
             df = pd.DataFrame(data, columns=cols)
             return df
         except Exception as e:
@@ -110,32 +117,40 @@ class LPBlockSummarizer:
     Checks the datastore for any recrods of mint events for each pair, and concats the two dataframes if any mint record of the pair was found. 
     '''
     def pairMintEventChecker(self):
-        pairs = self.syncs
-        merged_list = []
-        for address in pairs['address']:
+        if self.syncs.empty:
+            return None
+        dfs = []
+        for address in self.syncs['address']:
             try:
-                df_mints = self.pairMintEventFinder(address)
-                merged_list.append(df_mints)
+                df = self.pairMintEventFinder(address)
+                if df is not None:
+                    dfs.append(df)
             except:
-                logging.info(f"No mint records for pair with address of {address}")
-        df = pd.concat([pairs, *merged_list], axis=1)
-        return df
+                logging.warn(f"Failed to find mint event for address {address}")
+        if not dfs:
+            return self.syncs
+        else:
+            merged_df = pd.concat(dfs)
+        return pd.merge(self.syncs, merged_df, on='address', how='outer')
     
     '''
     Finds the burn event of the pair at the current height and returns the number of mint events, amount removed from token0, and token1 for the specific pair as a dataframe
     '''
     def pairBurnEventFinder(self, address):
         try:
-            raw_pair_burn_event_table = PairBurnEvent.objects.using('default').filter(block_number=self.blockNumber, address=address).values('amount0', 'amount1')
+            raw_pair_burn_event_table = PairBurnEvent.objects.using('default').filter(block_number=self.blockNumber, address=address).values('address', 'amount0', 'amount1')
             if not raw_pair_burn_event_table:
                 logging.info(f'No burn events for pair with address {address}')
-                return None
+                data = [[address, 0, 0, 0]]
+                cols = ['address', 'num_burns', 'burns_0', 'burns_1']
+                df = pd.DataFrame(data, columns=cols)
+                return df
             df_raw_burns = pd.DataFrame.from_records(raw_pair_burn_event_table)
             num_burns = len(df_raw_burns)
             burns_0 = Decimal(np.sum(df_raw_burns['amount0'].to_numpy()))
             burns_1 = Decimal(np.sum(df_raw_burns['amount1'].to_numpy()))
-            data = [[num_burns, burns_0, burns_1]]
-            cols = ['num_burns', 'burns_0', 'burns_1']
+            data = [[address, num_burns, burns_0, burns_1]]
+            cols = ['address', 'num_burns', 'burns_0', 'burns_1']
             df = pd.DataFrame(data, columns=cols)
             return df
         except Exception as e:
@@ -146,16 +161,21 @@ class LPBlockSummarizer:
     Checks the datastore for any recrods of burn events for each pair, and concats the two dataframes if any burn record of the pair was found. 
     '''
     def pairBurnEventChecker(self):
-        pairs = self.mints
-        merged_list = []
-        for address in pairs['address']:
+        if self.mints.empty:
+            return None
+        dfs = []
+        for address in self.mints['address']:
             try:
-                df_burns = self.pairBurnEventFinder(address)
-                merged_list.append(df_burns)
+                df = self.pairBurnEventFinder(address)
+                if df is not None:
+                    dfs.append(df)
             except:
-                logging.info(f"No burn records for pair with address of {address}")
-        df = pd.concat([pairs, *merged_list], axis=1)
-        return df
+                logging.warn(f"Failed to find burn event for address {address}")
+        if not dfs:
+            return self.mints
+        else:
+            merged_df = pd.concat(dfs)
+        return pd.merge(self.mints, merged_df, on='address', how='outer')
 
 
     '''
@@ -163,17 +183,20 @@ class LPBlockSummarizer:
     '''
     def pairSwapEventFinder(self, address):
         try:
-            raw_pair_swap_event_table = PairSwapEvent.objects.using('default').filter(block_number=self.blockNumber, address=address).values('amount0_in', 'amount0_out', 'amount1_in', 'amount1_out')
+            raw_pair_swap_event_table = PairSwapEvent.objects.using('default').filter(block_number=self.blockNumber, address=address).values('address','amount0_in', 'amount0_out', 'amount1_in', 'amount1_out')
             if not raw_pair_swap_event_table:
                 logging.info(f'No swap events for pair with address {address}')
-                return None
+                data = [[address, 0, 0, 0, 0]]
+                cols = ['address', 'num_swaps_0', 'num_swaps_1', 'volume_0', 'volume_1']
+                df = pd.DataFrame(data, columns=cols)
+                return df
             df_raw_swaps = pd.DataFrame.from_records(raw_pair_swap_event_table)
             num_swaps_0 = df_raw_swaps[(df_raw_swaps['amount0_in'] > 0) | (df_raw_swaps['amount0_out'] > 0)]['amount0_in'].count()
             num_swaps_1 = df_raw_swaps[(df_raw_swaps['amount1_in'] > 0) | (df_raw_swaps['amount1_out'] > 0)]['amount1_in'].count()
             volume_0 = Decimal(np.abs(np.sum(df_raw_swaps.loc[df_raw_swaps['amount0_in'] > 0, 'amount0_in'].to_numpy()) - np.sum(df_raw_swaps.loc[df_raw_swaps['amount0_out'] > 0, 'amount0_out'].to_numpy())))
             volume_1 = Decimal(np.abs(np.sum(df_raw_swaps.loc[df_raw_swaps['amount1_in'] > 0, 'amount1_in'].to_numpy()) - np.sum(df_raw_swaps.loc[df_raw_swaps['amount1_out'] > 0, 'amount1_out'].to_numpy())))
-            data = [[num_swaps_0, num_swaps_1, volume_0, volume_1]]
-            cols = ['num_swaps_0', 'num_swaps_1', 'volume_0', 'volume_1']
+            data = [[address, num_swaps_0, num_swaps_1, volume_0, volume_1]]
+            cols = ['address', 'num_swaps_0', 'num_swaps_1', 'volume_0', 'volume_1']
             df = pd.DataFrame(data, columns=cols)
             return df
         except Exception as e:
@@ -185,26 +208,35 @@ class LPBlockSummarizer:
     Checks the datastore for any recrods of burn events for each pair, and concats the two dataframes if any burn record of the pair was found. 
     '''
     def pairSwapEventChecker(self):
-        pairs = self.burns
-        merged_list = []
-        for address in pairs['address']:
+        if self.burns.empty:
+            return None
+        dfs = []
+        for address in self.burns['address']:
             try:
-                df_swaps = self.pairSwapEventFinder(address)
-                merged_list.append(df_swaps)
+                df = self.pairSwapEventFinder(address)
+                if df is not None:
+                    dfs.append(df)
             except:
-                logging.info(f"No swap records for pair with address of {address}")
-        df = pd.concat([pairs, *merged_list], axis=1)
-        return df
+                logging.warn(f"Failed to find swap event for address {address}")
+        if not dfs:
+            return self.burns
+        else:
+            merged_df = pd.concat(dfs)
+        return pd.merge(self.burns, merged_df, on='address', how='outer')
     
     '''
     Finds the latest token total supply record of the pair at the current height and returns the amount as a dataframe
     '''
     def latestTokenTotalSupplyFinder(self, address):
         try:
-            token_total_supply_table = TokenTotalSupply.objects.using('default').filter(block_number__lte=self.blockNumber, token_address=address).values('total_supply').order_by('-block_number').first()
+            token_total_supply_table = TokenTotalSupply.objects.using('default').filter(block_number__lte=self.blockNumber, token_address=address).values('token_address', 'total_supply').order_by('-block_number').first()
             if not token_total_supply_table:
-                return None
-            df = pd.DataFrame.from_dict([token_total_supply_table])
+                data = [[address, 0]]
+                cols = ['address', 'total_supply']
+                df = pd.DataFrame(data, columns=cols)
+                return df
+            df = pd.DataFrame.from_records([token_total_supply_table])
+            df = df.rename(columns={'token_address': 'address'})
             return df
         except Exception as e:
             logging.error('Error occurred while finding the token total supply for pair: {address}', str(e))
@@ -214,16 +246,21 @@ class LPBlockSummarizer:
     Checks the datastore for the latest token total supply record for each pair, and concats the two dataframes. 
     '''
     def tokenTotalSupplyChecker(self):
-        pairs = self.swaps
-        merged_list = []
-        for address in pairs['address']:
+        if self.swaps.empty:
+            return None
+        dfs = []
+        for address in self.swaps['address']:
             try:
-                df_swaps = self.latestTokenTotalSupplyFinder(address)
-                merged_list.append(df_swaps)
+                df = self.latestTokenTotalSupplyFinder(address)
+                if df is not None:
+                    dfs.append(df)
             except:
-                logging.info(f"No token total supply records for pair with address of {address}")
-        df = pd.concat([pairs, *merged_list], axis=1)
-        return df
+                logging.warn(f"Failed to find latest token total supply for address {address}")
+        if not dfs:
+            return self.swaps
+        else:
+            merged_df = pd.concat(dfs)
+        return pd.merge(self.swaps, merged_df, on='address', how='outer')
     
     '''
     Cleans up the dataframe and saves to datastore
@@ -243,5 +280,5 @@ class LPBlockSummarizer:
                     defaults=row.to_dict(),
                 )
             return block_summary,created_block_summary
-        except:
-            logging.info(f"Couldn't save block_summary for {row}")
+        except Exception as e:
+            logging.info(f"Couldn't save block_summary for {row} %s", str(e))
