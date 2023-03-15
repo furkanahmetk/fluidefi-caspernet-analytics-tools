@@ -11,11 +11,9 @@ from cspr_summarization.entities.BlockHours import BlockHours
 import logging
 import schedule
 import time
-logging.basicConfig(level=logging.WARN)
-import pandas as pd 
-pd.set_option('display.max_rows', 500)
-pd.set_option('display.max_columns', 500)
-pd.set_option('display.width', 1000)############################################################################
+logging.basicConfig(level=logging.INFO)
+
+############################################################################
 ## START OF APPLICATION
 ############################################################################
 
@@ -34,15 +32,18 @@ def main():
 
     
     if latest_block_hour >= latest_block_summary:
-        for i in range(1470796, 1544791 + 1):
-        # for i in range(1422605, 1422605 + 1):
+        for i in range(latest_block_summary, latest_block_hour + 1):
             try:
                 lpBlockSummarizer = LPBlockSummarizer(i)
-                print(lpBlockSummarizer.summarizer())
+                lpBlockSummarizer.summarizer()
             except:
                 logging.error(f'Failed to summarize for block {i}')
 
 if __name__ == '__main__':
-    main()
+    schedule.every(1).minutes.do(main)
+
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
 
         
