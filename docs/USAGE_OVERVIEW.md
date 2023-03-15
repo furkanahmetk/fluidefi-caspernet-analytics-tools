@@ -9,7 +9,13 @@ Docker version 20.10.16, build aa7e414
 docker-compose version 1.29.2, build 5becea4c
 ```
 - Have [`casper-aggregator`](https://github.com/fluidefi/fluidefi-caspernet-aggregator-tools) already run and published data. <br>
-Open your preferred database viewer and explore that the different tables have data `blocks`, `block_hours`, `all_pairs` ...
+Open your preferred database viewer and explore that the different tables have data `blocks`, `block_hours`, `all_pairs` ... <br>
+
+* As an alternative to the last point above (`have casper-aggregator already run`), you can just simply import the dump data (the output of the aggregator).<br>
+To do that make sure to:
+1. Have an env var (within the `.env` file) named `IMPORT_DATA` with its value set to `true` (`IMPORT_DATA=true`).
+2. Have the `dump_data` file at the root level of the directory (at the same level where you have the `docker-compose.yml` file - and the filename should be `dump_data`).
+3. With these two requirements set, when the services start, they will import the required data to the database.
 
 
 
