@@ -72,5 +72,33 @@ services:
       retries: 5
     volumes:
       - fl-pgdata:/var/lib/postgresql/data
+
+  django-api:
+    image: fluidefi-django-api
+    build:
+      context: ./components/api
+      dockerfile: ./Dockerfile
+    restart: always
+    container_name: fluidefi-django-api
+    networks:
+      - fluidefi-net
+    depends_on:
+      - postgres
+    ports:
+      - 8080:8080
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - API_READ_DB_CONNECTION_HOST=$API_READ_DB_CONNECTION_HOST
+      - API_READ_DB_CONNECTION_DATABASE=$API_READ_DB_CONNECTION_DATABASE
+      - API_READ_DB_CONNECTION_USERNAME=$API_READ_DB_CONNECTION_USERNAME
+      - API_READ_DB_CONNECTION_PASSWORD=$API_READ_DB_CONNECTION_PASSWORD
+      - API_READ_DB_CONNECTION_PORT=$API_READ_DB_CONNECTION_PORT
+      - API_WRITE_DB_CONNECTION_HOST=$API_WRITE_DB_CONNECTION_HOST
+      - API_WRITE_DB_CONNECTION_DATABASE=$API_WRITE_DB_CONNECTION_DATABASE
+      - API_WRITE_DB_CONNECTION_USERNAME=$API_WRITE_DB_CONNECTION_USERNAME
+      - API_WRITE_DB_CONNECTION_PASSWORD=$API_WRITE_DB_CONNECTION_PASSWORD
+      - API_WRITE_DB_CONNECTION_PORT=$API_WRITE_DB_CONNECTION_PORT
+      - DJANGO_SECRET_KEY=$DJANGO_SECRET_KEY
 volumes:
   fl-pgdata:
