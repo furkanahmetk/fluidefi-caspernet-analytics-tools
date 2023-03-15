@@ -14,7 +14,7 @@ Open your preferred database viewer and explore that the different tables have d
 * As an alternative to the last point above (`have casper-aggregator already run`), you can just simply import the dump data (the output of the aggregator).<br>
 To do that make sure to:
 1. Have an env var (within the `.env` file) named `IMPORT_DATA` with its value set to `true` (`IMPORT_DATA=true`).
-2. Have the `dump_data` file at the root level of the directory (at the same level where you have the `docker-compose.yml` file - and the filename should be `dump_data`).
+2. Have the `dump_data.sql` file at the root level of the directory (at the same level where you have the `docker-compose.yml` file - and the filename should be `dump_data`).
 3. With these two requirements set, when the services start, they will import the required data to the database.
 
 
