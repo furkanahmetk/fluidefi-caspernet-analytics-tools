@@ -27,8 +27,6 @@ services:
       - WRITE_DB_CONNECTION_USERNAME=$WRITE_DB_CONNECTION_USERNAME
       - WRITE_DB_CONNECTION_PASSWORD=$WRITE_DB_CONNECTION_PASSWORD
       - WRITE_DB_CONNECTION_PORT=$WRITE_DB_CONNECTION_PORT
-    depends_on:
-      - data_loader
 
   hourly_summarizer:
     image: fluidefi-hourly_summarizer
@@ -53,28 +51,6 @@ services:
       - WRITE_DB_CONNECTION_PASSWORD=$WRITE_DB_CONNECTION_PASSWORD
       - WRITE_DB_CONNECTION_PORT=$WRITE_DB_CONNECTION_PORT
       - FORCE_RECALCULATE_START_HOUR=$FORCE_RECALCULATE_START_HOUR
-    depends_on:
-      - data_loader
-  
-  data_loader:
-    image: fluidefi-data_loader
-    build:
-      context: ./components/cspr_summarizers
-      dockerfile: cspr_summarization/services/dump_data_loader/Dockerfile
-    container_name: fluidefi-data_loader
-    networks:
-      - fluidefi-net
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    environment:
-      - WRITE_DB_CONNECTION_HOST=$WRITE_DB_CONNECTION_HOST
-      - WRITE_DB_CONNECTION_DATABASE=$WRITE_DB_CONNECTION_DATABASE
-      - WRITE_DB_CONNECTION_USERNAME=$WRITE_DB_CONNECTION_USERNAME
-      - WRITE_DB_CONNECTION_PASSWORD=$WRITE_DB_CONNECTION_PASSWORD
-      - WRITE_DB_CONNECTION_PORT=$WRITE_DB_CONNECTION_PORT
-      - IMPORT_DATA=$IMPORT_DATA
-    volumes:
-      - ./dump_data.sql:/usr/src/app/dump_data.sql
 
   postgres:
     image: postgres
