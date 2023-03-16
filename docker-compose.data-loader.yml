@@ -1,0 +1,25 @@
+version: "3.7"
+
+networks:
+  fluidefi-net:
+    driver: bridge
+
+services:
+  data_loader:
+    image: fluidefi-data_loader
+    build:
+      context: ./components/cspr_summarizers
+      dockerfile: cspr_summarization/services/dump_data_loader/Dockerfile
+    container_name: fluidefi-data_loader
+    networks:
+      - fluidefi-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      - WRITE_DB_CONNECTION_HOST=$WRITE_DB_CONNECTION_HOST
+      - WRITE_DB_CONNECTION_DATABASE=$WRITE_DB_CONNECTION_DATABASE
+      - WRITE_DB_CONNECTION_USERNAME=$WRITE_DB_CONNECTION_USERNAME
+      - WRITE_DB_CONNECTION_PASSWORD=$WRITE_DB_CONNECTION_PASSWORD
+      - WRITE_DB_CONNECTION_PORT=$WRITE_DB_CONNECTION_PORT
+    volumes:
+      - ./dump_data.sql:/usr/src/app/dump_data.sql

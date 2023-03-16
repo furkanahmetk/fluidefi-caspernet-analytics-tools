@@ -29,8 +29,15 @@ class LpHourlySummarizer:
       .filter(timestamp_utc__gte=self.start_hour, timestamp_utc__lt= self.end_hour) \
       .values('block_number', 'timestamp_utc').order_by('-timestamp_utc')
     self.last_hour_block_numbers = pd.DataFrame.from_records(blocks)
-    all_pairs = AllPairs.objects.values('id', 'contract_address', 'token0_decimals', 'token1_decimals', 'token0_address', 'token1_address')
-    self.all_pairs = pd.DataFrame.from_records(all_pairs)
+    if len(blocks) > 0:
+      max_block_number = blocks.first()['block_number']
+      all_pairs = AllPairs.objects.filter(first_mint_event_block_number__lte=max_block_number).values('id', 'contract_address', 'token0_decimals', 'token1_decimals', 'token0_address', 'token1_address')
+      self.all_pairs = pd.DataFrame.from_records(all_pairs)
+    else:
+      all_pairs = AllPairs.objects.values('id', 'contract_address', 'token0_decimals', 'token1_decimals', 'token0_address', 'token1_address')
+      self.all_pairs = pd.DataFrame.from_records(all_pairs)
+      print('No block')
+    
   
   '''
   # create a record for each pair, with all values at zero
