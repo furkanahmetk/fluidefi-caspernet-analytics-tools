@@ -33,3 +33,4 @@ API app requirements:
 - six==1.16.0
 - sqlparse==0.4.3
 - uritemplate==4.1.1
+

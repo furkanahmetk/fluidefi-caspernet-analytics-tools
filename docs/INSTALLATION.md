@@ -1,5 +1,6 @@
 ## Installation
 
+
 ### Development Setup
 
 Clone the repo:
@@ -120,3 +121,4 @@ Now, you can run the two applications, summarizers and api, by simply running:
 ```bash
 docker compose up --build
 ```
+
