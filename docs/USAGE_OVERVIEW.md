@@ -26,6 +26,13 @@ To do that make sure to:
 - start the services: `docker compose up`: This command will create the database tables needed on this service and then starts the services
 
 
+## Clean from previous runs
+To cleanup containers, volumes and networks from previous runs, run this command: 
+- `docker compose down --volumes`
+After that remove the `.env` file, previously created, by running this command:
+- `rm .env` 
+
+
 ## Check the results:
 
 You can check the logs of the docker containers for insights regarding the services results, to do that run `docker compose logs` (if you want the logs of only one service then just add the service name to the previous command - for example, to get the logs of the block_summarizer you have to run `docker compose logs block_summarizer`).<br><br> 
