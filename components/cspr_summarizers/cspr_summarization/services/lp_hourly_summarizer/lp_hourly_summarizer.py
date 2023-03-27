@@ -58,7 +58,8 @@ class LpHourlySummarizer:
   # SyncEvents Summarization
   '''
   def sync_consumer(self):
-    df_sync = self.sync_finder(self.last_hour_block_numbers['block_number'].values)
+    # pass the highest block_number to the sync
+    df_sync = self.sync_finder(self.last_hour_block_numbers.loc[0,'block_number'])
     # Sync summarization
     if len(df_sync) > 0:
       close_reserves = self.sync_summarizer(df_sync)
@@ -150,10 +151,12 @@ class LpHourlySummarizer:
   '''
   # return sync events where sync.block_number in block_numbers arg 
   '''
-  def sync_finder(self, block_numbers):
+  def sync_finder(self, block_number):
     try:
+      # get all the syncs whose block_number lte arg block_number
+      # to ensure that in case the current hour doesn't have a sync then we'll get the previous one
       sync_table = PairSyncEvent.objects.using('default') \
-        .filter(block_number__in=block_numbers) \
+        .filter(block_number__lte=block_number) \
         .values('id', 'address','block_number', 'reserve0', 'reserve1')
 
       df_sync = pd.DataFrame.from_records(sync_table)
