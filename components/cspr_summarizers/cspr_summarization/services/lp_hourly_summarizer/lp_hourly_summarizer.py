@@ -34,9 +34,9 @@ class LpHourlySummarizer:
       all_pairs = AllPairs.objects.filter(first_mint_event_block_number__lte=max_block_number).values('id', 'contract_address', 'token0_decimals', 'token1_decimals', 'token0_address', 'token1_address')
       self.all_pairs = pd.DataFrame.from_records(all_pairs)
     else:
-      all_pairs = AllPairs.objects.values('id', 'contract_address', 'token0_decimals', 'token1_decimals', 'token0_address', 'token1_address')
+      all_pairs = []
       self.all_pairs = pd.DataFrame.from_records(all_pairs)
-      print('No block')
+      logging.info(f'\t\t No block for {start_hour} , {end_hour}')
     
   
   '''
@@ -47,7 +47,7 @@ class LpHourlySummarizer:
       try:
         hourly_data = HourlyData(pair['contract_address'], self.start_hour, self.end_hour)
         hourly_data.save()
-      except IntegrityError:
+      except:
         hourly_data = HourlyData.objects.get(address=pair['contract_address'], open_timestamp_utc=self.start_hour, close_timestamp_utc=self.end_hour)
         HourlyData.objects \
             .filter(address=pair['contract_address'], open_timestamp_utc=self.start_hour, close_timestamp_utc=self.end_hour) \

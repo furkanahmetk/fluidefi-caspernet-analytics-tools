@@ -1,9 +1,13 @@
 from django.db import models
+from django.db.models import F
 
 class HourlyData(models.Model):
   class Meta:
     db_table = 'hourly_data'
     unique_together = ('address', 'open_timestamp_utc', 'close_timestamp_utc')
+    constraints = [
+            models.CheckConstraint(check=models.Q(open_timestamp_utc__ne=F('close_timestamp_utc')), name='different_values')
+    ]
   
   id = models.AutoField(primary_key=True)
   address = models.CharField(max_length=100)

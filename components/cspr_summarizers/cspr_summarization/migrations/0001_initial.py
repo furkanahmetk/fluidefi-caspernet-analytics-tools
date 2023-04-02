@@ -52,7 +52,8 @@ class Migration(migrations.Migration):
                     max_block             integer                  not null,
                     close_lp_token_supply numeric(155)             not null,
                     constraint address_timestamp_unique
-                        unique (address, open_timestamp_utc, close_timestamp_utc)
+                        unique (address, open_timestamp_utc, close_timestamp_utc),
+                    CONSTRAINT different_values CHECK (open_timestamp_utc <> close_timestamp_utc)
             );
         """, 
         ),
