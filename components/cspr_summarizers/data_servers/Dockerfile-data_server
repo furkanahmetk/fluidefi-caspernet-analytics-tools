@@ -1,0 +1,11 @@
+FROM fluidefi-metrics
+
+WORKDIR /usr/src/app
+
+# copy entrypoint services files
+COPY ./lp_summary.py ./lp_summary.py
+COPY ./exchange_rate.py ./exchange_rate.py
+
+COPY ./data_server.py ./data_server.py
+
+ENTRYPOINT [ "python3", "data_server.py" ]

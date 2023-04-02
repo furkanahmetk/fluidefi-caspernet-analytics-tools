@@ -42,3 +42,23 @@ To check the outputs of the services open your preferred database viewer and exp
 ## Run the Hourly Summarizer for a specific range of time
 
 To re-do the summarization of the hourly data set a value for the environment variable `FORCE_RECALCULATE_START_HOUR` that you will find inside `.env` file and then restart the `hourly_summarizer` service `docker compose up --buid -d hourly_summarizer`. This will allow the service to re-run the summarization for that specific range of time (the range is FORCE_RECALCULATE_START_HOUR and FORCE_RECALCULATE_START_HOUR + 1 hour) once and then get back to the normal behavior (so you don't have to stop the service and re-run it again).
+
+<br><br>
+
+# Run metrics computation services
+In order to run the `data_server`, `exchange_rate_populator`, and `lp_summary_populator` services make sure to have the `.env` file at the root directory level as explained above [Prerequisites](#prerequisites) part. <br>
+Then run the following commands: 
+1. First we should build a common shared image between the services. This step will speed up the build time of the services (build once and use it elsewhere)<br>
+```
+docker build  -f ./components/cspr_summarizers/data_servers/fluideFi-metrics.Dockerfile -t fluidefi-metrics ./components/cspr_summarizers/data_servers 
+```
+2. Once the step 1 is done, we can start the services by running this command: <br>
+```
+docker compose -f ./components/cspr_summarizers/data_servers/docker-compose.yml up  
+```
+
+## Clean from previous runs
+To cleanup containers, volumes and networks from previous runs, run this command: 
+- `docker compose -f ./components/data_servers/docker-compose.yml down --volumes`
+After that remove the `.env` file, previously created, by running this command:
+- `rm .env`
