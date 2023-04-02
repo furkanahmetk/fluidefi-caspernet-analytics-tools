@@ -39,12 +39,10 @@ source fl_agg_env/bin/activate
 
 curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
 python3 get-pip.py
-
-python3 -m pip install -r requirements.txt
 ```
 4. Install the required Python packages using pip
 ``` 
-pip install -r requirements.txt
+python3 -m pip install -r components/api/requirements.txt
 ```
 5. Set environment variables for a database connection or update `settings.py` with database connection information.
 
@@ -80,10 +78,10 @@ or alternatively create them manually by running [this script](./docs/queries.sq
 
 1. Run one or both of the services
 ``` 
-python block_summarizer.py
+~/fluidefi-caspernet-analytics-tools/components/cspr_summarizers$ python3 block_summarizer.py
 ```
 ```
-python hourly_summarizer.py
+~/fluidefi-caspernet-analytics-tools/components/cspr_summarizers$ python3 hourly_summarizer.py
 ```
 
 ### Testing:

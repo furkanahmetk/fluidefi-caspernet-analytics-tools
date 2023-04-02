@@ -1,0 +1,860 @@
+{% block content %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"> <!-- Important: rapi-doc uses utf8 characters -->
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+    <script type="module" src="https://unpkg.com/rapidoc/dist/rapidoc-min.js"></script>
+
+    <style>
+        rapi-doc::part(section-navbar) { /* <<< targets navigation bar */
+            background: linear-gradient(90deg, #3d4e70, #2e3746);
+            width: 400px;
+        }
+    </style>
+    <title>FLUIDEFI API Documentation</title>
+    <style>
+        .verticalLine {
+            border-left: thick solid darkgray;
+        }
+
+        .tableFixedHeader {
+            overflow-y: auto;
+        }
+
+        .tableFixedHeader thead th {
+            position: sticky;
+            top: 0;
+        }
+
+        table {
+            border: none;
+            width: 100%;
+        }
+
+        h3 {
+            margin-bottom: 0px;
+        }
+
+        th, td {
+            padding: 5px 15px 5px 5px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        th {
+            background-color: #eee;
+        }
+
+        .center {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<rapi-doc
+        id="thedoc"
+        spec-url={{spec_url}}
+        goto-path="#overview"
+        heading-text="&copy;FLUIDEFI&reg;"
+        theme="light"
+        header-color="#2d87e2"
+        primary-color="#2d87e2"
+{#        info-description-headings-in-navbar="true"#}
+        use-path-in-nav-bar="true"
+        show-header="false"
+        allow-server-selection="false"
+        allow-authentication="false"
+        allow-try="false"
+        update-route="true"
+        render-style="read"
+        sort-tags="true"
+>
+    <div slot="nav-logo" style="width:100%; display: flex; flex-direction:column;">
+        <p><img src="../../static/img/fluidefi_logo_api.png" style="width: 40px; padding-left: 10px;"></p>
+        <div style="display: flex;justify-content: left; margin: 2px 0; padding-left: 10px;">
+          <button class='btn' onclick="document.getElementById('thedoc').setAttribute('theme', 'light')" >Light</button>
+          <button class='btn' onclick="document.getElementById('thedoc').setAttribute('theme', 'dark')" >Dark</button>&nbsp;
+        </div>
+    </div>
+
+    {#    <div slot="overview" style="font-family: Arial Verdana Helvetica;">#}
+    <div slot="overview">
+        <h3>INTRODUCTION</h3>
+        <p>FLUIDEFI® is an award-winning platform that provides provides near real-time<sup><span style="color: deepskyblue;">1</span></sup>
+            analytics, portfolio management, and alerting
+            for thousands of decentralized financial (DeFi) digital assets. FLUIDEFI's analytics are calculated by
+            patent-pending algorithms using blockchain transaction logs.</p>
+        <p>The FLUIDEFI RESTful API allows developers to:
+        <ul>
+            <li>obtain detailed, accurate analytics of digital asset to identify investment opportunities across
+                multiple decentralized exchanges;</li>
+            <li>save their favorite tokens and liquidity pools for easy tracking;</li>
+            <li>create portfolios the digital assets from multiple platforms;</li>
+            <li>model the portfolio's performance based on historical returns;</li>
+            <li>optimize the balances of the portfolios to maximize future profitability;</li>
+            <li>monitor and receive alerts when digital asset metrics reach specified values or change over periods of
+                time;</li>
+            <li>analyze the actual profit and loss of digital asset holdings including those spread across multiple
+                portfolios (wallets);</li>
+            <li>swap digital assets more securely than ;</li>
+            <li>add and remove liquidity from liquidity pools;</li>
+            <li>develop and execute algorithmic trading strategies;</li>
+        </ul>
+        <p><sup><span style="color: deepskyblue;">1</span></sup>The term "near real-time" refers to the time delay
+            introduced by 1) automated data processing and 2) network transmission between the occurrence of an event
+            and the request of the processed data (the API call). The API responses include <i>as_of_timestamp</i> that
+            specifies the UTC date/time that the API response was generated and <i>last_processed</i> which includes the
+            UTC date/time the information was last calculated. FLUIDEFI uses ISO 8601 format for datetimes.</p>
+        <p>
+        <h3>ACCESS TO THE FLUIDEFI API</h3>
+        <p>Accessing the FLUIDEFI RESTful API requires:</p>
+        <ol>
+            <li>A username and password. This information is provided when enrolling for the FLUIDEFI services.</li>
+            <li>The API endpoint to use. The API end-point will be in the form of a URL. For example:
+                https://analytics.fluidefi.com<br><br>
+                <div class="verticalLine" style="padding: 2px 2px 2px 2px; background-color: lightgray;">
+                    NOTE: The API end-point URL for your account is based on your FLUIDEFI subscription level,
+                    described here:
+                    <a href="/price_plans/" target="_blank" title="FLUIDEFI Subscription Price Plans">
+                        https://analytics.fluidefi.com/price_plans/</a>
+                </div>
+                <br>
+            </li>
+            <li>Depending on your subscription level, the IP address(es) of your computer(s) making API requests may
+                need to be white-listed with the FLUIDEFI network firewall. Please send an email with your username and
+                the IP address(es) to be whitelisted to FLUIDEFI Support. Static IP addresses are recommended. Note:
+                when using dynamic IP addresses, the FLUIDEFI firewall does not automatically update when your dynamic
+                IP address changes.
+            </li>
+        </ol>
+        The FLUIDEFI platform has been OWASP certified. Contact us for the certificate.
+        <br/>
+        All API requests must be made to your designated API URL using HTTPS protocol via TCP/IP port 443 with TLS v1.3
+        or later and a quantum-ready SSL Cipher Suite. All FLUIDEFI servers use SSL certificates with sha256RSA
+        signature algorithms issued by <i>Sectigo RSA Domain Validation Secure Server CA</i>.
+        <br/>
+        <div class="verticalLine" style="padding: 10px 10px 10px 10px; background-color: lightgray;">It is important to
+            note that some API calls can generate very long responses. Please
+            review this documentation for performance recommendations.
+        </div>
+        <h3>FLUIDEFI SUPPORT</h3>
+        <p>Your Service Level Agreement (SLA) is based on your subscription level.</p>
+        <ul>
+            <li>Priority email support (SLA 1-2 business days): support@fluidefi.com</li>
+            <li>Dedicated Slack channel (SLA: 6 hours): Created when establishing your account.</li>
+            <li>Support Email & Slack Monitoring Hours: 10:30 AM UTC - 02:30 AM UTC</li>
+        </ul>
+        <h3>FLUIDEFI'S LIQUIDITY POOL METRICS</h3>
+
+        <div class="tableFixedHeader" style="height: 400px;">
+            <table>
+                <thead>
+                <tr>
+                    <th>Key</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>open_timestamp_utc</td>
+                    <td>Start date/time for information in this record. The first record will begin on this date</td>
+                </tr>
+                <tr>
+                    <td>close_timestamp_utc</td>
+                    <td>End date/time for information in this record. The close of the last record is this date</td>
+                </tr>
+                <tr>
+                    <td>total_period_return</td>
+                    <td>Total rate of return for a liquidity pool in the specified period</td>
+                </tr>
+                <tr>
+                    <td>yield_on_lp_fees</td>
+                    <td>Return from fees in the specified period</td>
+                </tr>
+                <tr>
+                    <td>price_change_ret</td>
+                    <td>Return from the change in price of the underlying tokens in the specified period</td>
+                </tr>
+                <tr>
+                    <td>misc_return</td>
+                    <td>Return from fees earned from flashloans and incentives</td>
+                </tr>
+                <tr>
+                    <td>hodl_return</td>
+                    <td>Return if tokens were held (not staked in a liquidity pool) in the specified period</td>
+                </tr>
+                <tr>
+                    <td>fees_apy</td>
+                    <td>Return from fees in the specified period, annualized</td>
+                </tr>
+                <tr>
+                    <td>total_apy</td>
+                    <td>Total rate of return for a liquidity pool in the specified period, annualized</td>
+                </tr>
+                <tr>
+                    <td>token_0_fees_croi</td>
+                    <td>Cumulative return from fees earned in the form token 0</td>
+                </tr>
+                <tr>
+                    <td>token_1_fees_croi</td>
+                    <td>Cumulative return from fees earned in the form token 1</td>
+                </tr>
+                <tr>
+                    <td>misc_croi</td>
+                    <td>Cumulative total return on investment for misc (see above) in base_currency</td>
+                </tr>
+                <tr>
+                    <td>total_croi</td>
+                    <td>Cumulative total return on investment in base_currency</td>
+                </tr>
+                <tr>
+                    <td>fees_croi</td>
+                    <td>Cumulative return from fees in base_currency</td>
+                </tr>
+                <tr>
+                    <td>price_change_croi</td>
+                    <td>Cumulative return from the change in underlying tokens' values, this includes impermanent loss
+                    </td>
+                </tr>
+                <tr>
+                    <td>hodl_token_0_croi</td>
+                    <td>Cumulative total return for token 0's hodler</td>
+                </tr>
+                <tr>
+                    <td>hodl_token_1_croi</td>
+                    <td>Cumulative total return for token 1's hodler</td>
+                </tr>
+                <tr>
+                    <td>hodl_croi</td>
+                    <td>Cumulative total return for a hodler of both token 0 and token 1</td>
+                </tr>
+                <tr>
+                    <td>token_0_fees_return</td>
+                    <td>Return from fees in the specified period for token 0</td>
+                </tr>
+                <tr>
+                    <td>token_1_fees_return</td>
+                    <td>Return from fees in the specified period for token 1</td>
+                </tr>
+                <tr>
+                    <td>annual_vol</td>
+                    <td>Standard deviation of hourly total returns, annualized</td>
+                </tr>
+                <tr>
+                    <td>sharpe_ratio</td>
+                    <td>Annualized excess total return divided by annualized standard deviation of total returns</td>
+                </tr>
+                <tr>
+                    <td>accumulated_token_0_fees</td>
+                    <td>Amount of token 0 earned from the liquidity pool</td>
+                </tr>
+                <tr>
+                    <td>accumulated_token_1_fees</td>
+                    <td>Amount of token 1 earned from the liquidity pool</td>
+                </tr>
+                <tr>
+                    <td>open_lp_token_price</td>
+                    <td>Open Liquidity Pool Open Price in the specified period</td>
+                </tr>
+                <tr>
+                    <td>close_lp_token_price</td>
+                    <td>Close Liquidity Pool Open Price in the specified period</td>
+                </tr>
+                <tr>
+                    <td>impermanent_loss_level</td>
+                    <td>The percentage difference in portfolio value between staking tokens in an AMM and holding tokens
+                        in a wallet. Fees are not taken into account in this calculation
+                    </td>
+                </tr>
+                <tr>
+                    <td>impermanent_loss_impact</td>
+                    <td>The percentage difference in ROI between staking tokens in an AMM and holding tokens in a
+                        wallet. Fees are not taken into account in this calculation
+                    </td>
+                </tr>
+                <tr>
+                    <td>volume_0</td>
+                    <td>Number of token 0's traded</td>
+                </tr>
+                <tr>
+                    <td>volume_1</td>
+                    <td>Number of token 1's traded</td>
+                </tr>
+                <tr>
+                    <td>volume_0_base_curr</td>
+                    <td>Token 0's volume in base_currency (default is USD) in the specified time period</td>
+                </tr>
+                <tr>
+                    <td>volume_1_base_curr</td>
+                    <td>Token 1's volume in base_currency (default is USD) in the specified time period</td>
+                </tr>
+                <tr>
+                    <td>volume</td>
+                    <td>Volume in USD in the specified time period</td>
+                </tr>
+                <tr>
+                    <td>transactions_period</td>
+                    <td>Number of transactions recorded during the time_period specified</td>
+                </tr>
+                <tr>
+                    <td>num_swaps</td>
+                    <td>Number of swaps in the specified period</td>
+                </tr>
+                <tr>
+                    <td>num_swaps_0</td>
+                    <td>Number of swaps of token 0 in the specified period</td>
+                </tr>
+                <tr>
+                    <td>num_swaps_1</td>
+                    <td>Number of swaps of token 1 in the specified period</td>
+                </tr>
+                <tr>
+                    <td>num_mints</td>
+                    <td>Number of mint events in the specified period</td>
+                </tr>
+                <tr>
+                    <td>num_burns</td>
+                    <td>Number of burn events in the specified period</td>
+                </tr>
+                <tr>
+                    <td>num_liquidity_events</td>
+                    <td>Total number of liquidity events in the specified period for this platform</td>
+                </tr>
+                <tr>
+                    <td>open_reserve_0</td>
+                    <td>Reserves of token 0 at the first transaction in time_period specified</td>
+                </tr>
+                <tr>
+                    <td>open_reserve_1</td>
+                    <td>Reserves of token 1 at the first transaction in time_period specified</td>
+                </tr>
+                <tr>
+                    <td>close_reserve_0</td>
+                    <td>Reserves of token 0 at the last transaction in time_period specified</td>
+                </tr>
+                <tr>
+                    <td>close_reserve_1</td>
+                    <td>Reserves of token 1 at the last transaction in time_period specified</td>
+                </tr>
+
+                <tr>
+                    <td>open_reserve_ratio</td>
+                    <td>Token 0's reserves divided by token 1's reserves at the beginning of the period</td>
+                </tr>
+                <tr>
+                    <td>close_reserve_ratio</td>
+                    <td>Token 0's reserves divided by token 1's reserves at the end of the period</td>
+                </tr>
+                <tr>
+                    <td>open_reserve_0_base_curr</td>
+                    <td>Reserves of token 0 in base_currency (default is USD) at the first transaction in time_period
+                        specified
+                    </td>
+                </tr>
+                <tr>
+                    <td>open_reserve_1_base_curr</td>
+                    <td>Reserves of token 1 in base_currency (default is USD) at the first transaction in time_period
+                        specified
+                    </td>
+                </tr>
+                <tr>
+                    <td>close_reserve_0_base_curr</td>
+                    <td>Reserves of token 0 in base_currency (default is USD) at the last transaction in time_period
+                        specified
+                    </td>
+                </tr>
+                <tr>
+                    <td>close_reserve_1_base_curr</td>
+                    <td>Reserves of token 1 in base_currency (default is USD) at the last transaction in time_period
+                        specified
+                    </td>
+                </tr>
+                <tr>
+                    <td>open_poolsize</td>
+                    <td>Pool size in USD at the first transaction in time_period specified</td>
+                </tr>
+                <tr>
+                    <td>close_poolsize</td>
+                    <td>Pool size in USD at the last transaction in time_period specified</td>
+                </tr>
+                <tr>
+                    <td>poolsize</td>
+                    <td>Same as close_poolsize; Kept for backwards compatibility</td>
+                </tr>
+                <tr>
+                    <td>avg_daily_tvl</td>
+                    <td>Average total value locked per day in the specified period</td>
+                </tr>
+                <tr>
+                    <td>avg_daily_volume</td>
+                    <td>Average volume per day in the specified period</td>
+                </tr>
+                <tr>
+                    <td>avg_daily_vol_tvl_ratio</td>
+                    <td>Average ratio of volume and total value locked per day in the specified period</td>
+                </tr>
+                <tr>
+                    <td>active_positions</td>
+                    <td>Number of active positions in the liquidity pool</td>
+                </tr>
+                <tr>
+                    <td>active_wallets</td>
+                    <td>Number of wallets investing in the liquidity pool</td>
+                </tr>
+                <tr>
+                    <td>avg_position_size</td>
+                    <td>The average size of the liquidity pool's positions</td>
+                </tr>
+                <tr>
+                    <td>avg_wallet_inv_size</td>
+                    <td>The average amount of investment in the pool by wallet</td>
+                </tr>
+                <tr>
+                    <td>open_price_0</td>
+                    <td>Price of token 0 in USD at the beginning of the specified time period</td>
+                </tr>
+                <tr>
+                    <td>open_price_1</td>
+                    <td>Price of token 1 in USD at the beginning of the specified time period</td>
+                </tr>
+                <tr>
+                    <td>high_price_0</td>
+                    <td>Highest price of token 0 in USD in the specified time period</td>
+                </tr>
+                <tr>
+                    <td>high_price_1</td>
+                    <td>Highest price of token 1 in USD in the specified time period</td>
+                </tr>
+                <tr>
+                    <td>low_price_0</td>
+                    <td>Lowest price of token 0 in USD in the specified time period</td>
+                </tr>
+                <tr>
+                    <td>low_price_1</td>
+                    <td>Lowest price of token 1 in USD in the specified time period</td>
+                </tr>
+                <tr>
+                    <td>close_price_0</td>
+                    <td>Price of token 0 in USD at the end of the specified time period</td>
+                </tr>
+                <tr>
+                    <td>close_price_1</td>
+                    <td>Price of token 1 in USD at the end of the specified time period</td>
+                </tr>
+
+                <tr>
+                    <td>all_time_high_0</td>
+                    <td>Highest price recorded for token 0</td>
+                </tr>
+                <tr>
+                    <td>all_time_high_1</td>
+                    <td>Highest price recorded for token 1</td>
+                </tr>
+
+                <tr>
+                    <td>hours_since_ath_0</td>
+                    <td>Number of hours since token 0's all-time high price</td>
+                </tr>
+                <tr>
+                    <td>hours_since_ath_1</td>
+                    <td>Number of hours since token 1's all-time high price</td>
+                </tr>
+
+                <tr>
+                    <td>last_processed</td>
+                    <td>Last Date/time UTC this liquidity pool was processed through FLUIDEFI's algorithms</td>
+                </tr>
+                <tr>
+                    <td>token0_collateral</td>
+                    <td>Collateral of token 0 in liquidity pool</td>
+                </tr>
+                <tr>
+                    <td>token1_collateral</td>
+                    <td>Collateral of token 1 in liquidity pool</td>
+                </tr>
+                <tr>
+                    <td>token0_symbol</td>
+                    <td>Symbol of token 0 in liquidity pool</td>
+                </tr>
+                <tr>
+                    <td>token1_symbol</td>
+                    <td>Symbol of token 1 in liquidity pool</td>
+                </tr>
+                <tr>
+                    <td>token0_address</td>
+                    <td>Contract address of token 0 in liquidity pool</td>
+                </tr>
+                <tr>
+                    <td>token1_address</td>
+                    <td>Contract address of token 1 in liquidity pool</td>
+                </tr>
+                <tr>
+                    <td>id</td>
+                    <td>FLUIDEFI unique ID number for liquidity pool. Required for other API calls such as
+                        Portfolio_update
+                    </td>
+                </tr>
+                <tr>
+                    <td>platform_id</td>
+                    <td>FLUIDEFI unique ID number for decentralized exchange</td>
+                </tr>
+                <tr>
+                    <td>lp_name</td>
+                    <td>Name of liquidity pool using token abbreviations (Note: ETH often listed as WETH or 'wrapped
+                        ETH')
+                    </td>
+                </tr>
+                <tr>
+                    <td>contract_address</td>
+                    <td>Contract Address of smart contract for liquidity pool</td>
+                </tr>
+                <tr>
+                    <td>url</td>
+                    <td>URL of liquity pool on platform</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="verticalLine" style="padding: 10px 10px 10px 10px; background-color: lightgray;">
+            NOTE: the FLUIDEFI analytics and index prices are updated every hour. For 'spot' analytics & pricing as of
+            the current block, use the API calls described below.
+        </div>
+        <h3>CRYPTOCURRENCY & DIGITAL TOKEN PRICES</h3>
+        <p>FLUIDEFI calculates prices using only decentralized exchange data extracted directly from the blockchain
+            (no centralized exchange data is used). Our pricing algorthm relies on liquidity pools, such as Uniswap and
+            Sushiswap, to construct a price index for a particular token or cryptocurrency.</p>
+        <p>Assume we would like to find the price of wBitcoin. The following steps are taken:</p>
+        <ol>
+            <li>Identify all pools where wBTC is paired with BUSD, USDC, USDT, or WETH.</li>
+            <li>Compute the implied price of wBTC from each pool (by assuming equal value of reserves for both tokens).
+            </li>
+            <li>Compute a poolsize-weighted average of the implied prices, so that larger liquidity pools have more
+                influence on what the price should be.
+            </li>
+        </ol>
+        <h3>APR VS. APY: WHAT’S THE DIFFERENCE?</h3>
+        <p>Both annual percentage yield (APY) and annual percentage rate (APR) refer to the annual return generated from
+            an investment, but they do so in different ways.</p>
+
+        <p>APY takes into account the compounding effect, and reports the annual return using one piece of information:
+            the annual return itself.
+            However, APR's calculation does not factor in compounding, and therefore reports the annual return using two
+            pieces of information: the APR + the compounding frequency.</p>
+
+        <p>Here's an example of how both metrics are computed.
+            Assume that for the past month, the total return for an investment is 2%. We calculate APR and APY as
+            follows:</p>
+
+        <ul>
+            <li>APR = 2% * 12 = 24%</li>
+            <li>APY = (1+2%)12 -1 = 26.82%</li>
+        </ul>
+
+        <p>In this case, APY > APR due to the compounding effect that is not taken into account by APR.</p>
+        <p>Also, note that these two statements are equivalent and both report how much return to expect in a year:</p>
+
+        <ol>
+            <li>Annual return of this investment is 26.82%</li>
+            <li>This investment has an APR of 24%, compounded monthly</li>
+        </ol>
+        <p>APY is the simpler way of reporting the same information. For this reason, FLUIDEFI emphasizes APY
+            figures.</p>
+
+        <h3>SUPPORTED BASE CURRENCIES FOR CALCULATIONS</h3>
+        <p>FLUIDEFI currently supports 24 fiat currencies, gold, silver, and 8,000+ digital assets & cryptocurrencies.
+            Examples: USD, WETH, GBP, CAD, CHF, JPY, AUD, NZD, HKD, EUR, NOK, SEK, SGD, CNY, KRW, AED, BRL, XAU8, & XAG.
+            If you need a fiat currency that is not listed here, contact support using the method below.</p>
+
+        <h3>PRECISION</h3>
+        <p>FLUIDEFI supports a precision of 160, which is the size of sqrtX96 variable in many smart-contracts used vr
+            DeFi platforms. The precision of a number is the total count of significant digits in the whole number, or,
+            in other words, the number of digits to both sides of the decimal point. For example: the number 123.4567
+            has a precision of 7. It is not uncommon to have amounts displayed as 8 digits to the left of the decimal
+            and 16 digits to the right.</p>
+
+        <h3>DATETIME FORMAT</h3>
+        <p>FLUIDEFI supports ISO 8601 standard format date and datetimes. All datetimes are in UTC. The GET methods
+            support YYYY-MM-DD. Example: "2021-06-01". POST methods support datetimes. Example:
+            "2021-10-18T19:19:06.982417".</p>
+
+        <h3>RATE LIMITING</h3>
+        <p>Rate limits are based on your subscription level and vary between 5 and 60 calls per second.</p>
+
+        <h3>"CURRENTLY IN ALPHA" AND "CURRENTLY IN BETA"</h3>
+        <p>From time to time FLUIDEFI documentation may indicate an API call or parameter is currently in Alpha or Beta.
+            "Currently in Beta" functionality is available to FLUIDEFI customers with access to our staging environment.
+            "Currently in Alpha" functionality is available upon request to FLUIDEFI customers with dedicated
+            servers.</p>
+
+        <h3>STATUS CODES AND ERROR RESPONSES</h3>
+        <p>All error responses have error code and a human-readable message. All error messages are in English.
+
+        <div class="tableFixedHeader">
+            <table>
+                <thead>
+                <tr>
+                    <th style="width: 100px;">Code</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>200</td>
+                    <td>Successful GET request</td>
+                </tr>
+                <tr>
+                    <td>201-202</td>
+                    <td>Successful PUT or POST request</td>
+                </tr>
+                <tr>
+                    <td>204</td>
+                    <td>Successful request, but the call did not generate any results to return.</td>
+                </tr>
+                <tr>
+                    <td>400</td>
+                    <td>Bad Request - Please check the parameters passed to the API call.</td>
+                </tr>
+                <tr>
+                    <td>500-505</td>
+                    <td>Server Error - Please try again later or contact FLUIDEFI Support.</td>
+                </tr>
+                <tr>
+                    <td colspan="2">See a <a href="https://www.w3.org/Protocols/rfc2616/rfc2616-sec10.html"
+                                             target="HTTPStatusCodes">full list of HTTP Status Code definitions.</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>RESPONSE CODES FOR TRANSACTION ROUTES</h3>
+        <p>The following is a list of response codes and messages that will be included in the response when an error is
+            encountered in a request to execute a transaction or encode transaction data fields.</p>
+
+        <h3>GENERAL</h3>
+        <div class="tableFixedHeader">
+            <table>
+                <thead>
+                <tr>
+                    <th style="width: 100px;">Code</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>1000</td>
+                    <td>Desired network not found in available options</td>
+                </tr>
+                <tr>
+                    <td>1100</td>
+                    <td>Cannot connect to desired network</td>
+                </tr>
+                <tr>
+                    <td>1200</td>
+                    <td>No valid account credentials found</td>
+                </tr>
+                <tr>
+                    <td>2000</td>
+                    <td>Desired platform not found in available options</td>
+                </tr>
+                <tr>
+                    <td>3000</td>
+                    <td>Invalid address</td>
+                </tr>
+                <tr>
+                    <td>3100</td>
+                    <td>Not the address of a valid token</td>
+                </tr>
+                <tr>
+                    <td>4000</td>
+                    <td>Given deadline less than minimum</td>
+                </tr>
+                <tr>
+                    <td>4050</td>
+                    <td>Gas price too low</td>
+                </tr>
+                <tr>
+                    <td>5000</td>
+                    <td>Sender's balance is 0 for input asset</td>
+                </tr>
+                <tr>
+                    <td>5050</td>
+                    <td>Sender's balance is 0 for input asset. Warning: Input asset is WETH</td>
+                </tr>
+                <tr>
+                    <td>5100</td>
+                    <td>Sender has insufficient balance for input asset</td>
+                </tr>
+                <tr>
+                    <td>5150</td>
+                    <td>Sender has insufficient balance for input asset. Warning: Input asset is WETH</td>
+                </tr>
+                <tr>
+                    <td>5200</td>
+                    <td>EVM execution error (error message will be provided if available)</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>SWAPS</h3>
+        <div class="tableFixedHeader">
+            <table>
+                <thead>
+                <tr>
+                    <th style="width: 100px;">Code</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>6000</td>
+                    <td>Invalid swap mode. Valid options are exactinput or exactoutput</td>
+                </tr>
+                <tr>
+                    <td>6100</td>
+                    <td>Swap path too short. List must have a minimum of 2 assets</td>
+                </tr>
+                <tr>
+                    <td>6200</td>
+                    <td>Only one of input asset and output asset can be ETH - not both</td>
+                </tr>
+                <tr>
+                    <td>6300</td>
+                    <td>For exactinput swaps, amount_in is a required field</td>
+                </tr>
+                <tr>
+                    <td>6400</td>
+                    <td>For exactouput swaps, amount_out is a required field</td>
+                </tr>
+                <tr>
+                    <td>6500</td>
+                    <td>Invalid swap path: A pool does not exist for one or more pairs of sequential tokens in path</td>
+                </tr>
+                <tr>
+                    <td>6550</td>
+                    <td>Insufficient liquidity: One or more of the pairs in the swap path does not have enough liquidity
+                        for the swap amounts
+                    </td>
+                </tr>
+                <tr>
+                    <td>6600</td>
+                    <td>Warning: Input asset is WETH. This requires sender has WETH tokens. Use ETH as input asset for
+                        swapping from ether
+                    </td>
+                </tr>
+                <tr>
+                    <td>6610</td>
+                    <td>Warning: Output asset is WETH. This will deliver WETH tokens to the recipient. Use ETH as output
+                        asset for receiving ether
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>LIQUIDITY - GENERAL</h3>
+        <div class="tableFixedHeader">
+            <table>
+                <thead>
+                <tr>
+                    <th style="width: 100px;">Code</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>7000</td>
+                    <td>Token A and token B must not be the same asset</td>
+                </tr>
+                <tr>
+                    <td>7100</td>
+                    <td>A pair does not currently exist for the given assets</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>ADDING LIQUIDITY</h3>
+        <div class="tableFixedHeader">
+            <table>
+                <thead>
+                <tr>
+                    <th style="width: 100px;">Code</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>8000</td>
+                    <td>Warning: Token A is WETH. This requires sender has WETH tokens. Use ETH as token A for adding
+                        liquidity from ether
+                    </td>
+                </tr>
+                <tr>
+                    <td>8010</td>
+                    <td>Warning: Token B is WETH. This requires sender has WETH tokens. Use ETH as token B for adding
+                        liquidity from ether
+                    </td>
+                </tr>
+                <tr>
+                    <td>8020</td>
+                    <td>Sender has insufficient balance of token A</td>
+                </tr>
+                <tr>
+                    <td>8030</td>
+                    <td>Sender has insufficient balance of token B</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h3>REMOVING LIQUIDITY</h3>
+        <div class="tableFixedHeader">
+            <table>
+                <thead>
+                <tr>
+                    <th style="width: 100px;">Code</th>
+                    <th>Description</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>9000</td>
+                    <td>Amount provided in liquidity field must be greater than 0</td>
+                </tr>
+                <tr>
+                    <td>9100</td>
+                    <td>Sender has insufficient balance of LP tokens for amount provided in liquidity field</td>
+                </tr>
+                <tr>
+                    <td>9200</td>
+                    <td>Warning: Token A is WETH. Recipient will receive WETH tokens. Use ETH as token A for removing
+                        liquidity to ether
+                    </td>
+                </tr>
+                <tr>
+                    <td>9210</td>
+                    <td>Warning: Token B is WETH. Recipient will receive WETH tokens. Use ETH as token B for removing
+                        liquidity to ether
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <br/>&nbsp;
+
+        <hr/>
+        <div class="center">
+            <sup>&copy;</sup>2021 - Present FLUIDEFI&reg; INC. All rights reserved.<br/>
+            FLUIDEFI&reg; is a Registered Trademark of FLUIDEFI INC.
+        </div>
+
+    </div>
+
+</rapi-doc>
+</body>
+</html>
+{% endblock %}

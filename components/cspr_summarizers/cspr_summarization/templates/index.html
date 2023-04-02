@@ -1,0 +1,73 @@
+{% extends "fl_basic.html" %}
+{% load static %}
+
+{% block content %}
+    <h1 style="color: white; font-size: xxx-large !important;">Institutional grade on-chain
+        DeFi data<br/>for investment professionals</h1>
+
+    <h3 class="font-weight-bold" style="color: white">Trending Pools (trailing 30 days) - CasperSwap</h3>
+
+    <table class="table"
+           style="width: 100%; border-spacing: 10px; color: white;">
+        <thead style="background-color: #111317">
+        <tr>
+            <th style="vertical-align: bottom;">Pair</th>
+            <th style="text-align: center; vertical-align: bottom;">Open Token0</th>
+            <th style="text-align: center; vertical-align: bottom;">Open Token1</th>
+            <th style="text-align: center; vertical-align: bottom;">Close Token0</th>
+            <th style="text-align: center; vertical-align: bottom;">Close Token1</th>
+            <th style="text-align: center; vertical-align: bottom;">High Token0</th>
+            <th style="text-align: center; vertical-align: bottom;">High Token1</th>
+            <th style="text-align: center; vertical-align: bottom;">Low Token0</th>
+            <th style="text-align: center; vertical-align: bottom;">Low Token1</th>
+            <th style="text-align: center; vertical-align: bottom;">Total Period Return</th>
+            <th style="text-align: center; vertical-align: bottom;">Yield on Fees</th>
+            <th style="text-align: center; vertical-align: bottom;">Price Change Return</th>
+            <th style="text-align: center; vertical-align: bottom;">HODL Return</th>
+            <th style="text-align: center; vertical-align: bottom;">Fees APY</th>
+            <th style="text-align: center; vertical-align: bottom;">Imp. Loss Level</th>
+            <th style="text-align: center; vertical-align: bottom;">Imp. Loss Impact</th>
+            <th style="text-align: center; vertical-align: bottom;">Volume</th>
+            <th style="text-align: center; vertical-align: bottom;">Open Reserve0</th>
+            <th style="text-align: center; vertical-align: bottom;">Open Reserve1</th>
+            <th style="text-align: center; vertical-align: bottom;">Close Reserve0</th>
+            <th style="text-align: center; vertical-align: bottom;">Close Reserve1</th>
+            <th style="text-align: center; vertical-align: bottom;">Poolsize</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for pool in trending_pools %}
+            <tr style="background-color: #111317 !important;">
+                <td nowrap>{{ pool.lp_name }}</td>
+                <td style="text-align: right;" nowrap>{{ pool.open_price_0 }}</td>
+                <td style="text-align: right;" nowrap>{{ pool.open_price_1 }}</td>
+                <td style="text-align: right;" nowrap>{{ pool.close_price_0 }}</td>
+                <td style="text-align: right;" nowrap>{{ pool.close_price_1 }}</td>
+                <td style="text-align: right;" style="text-align: right;">{{ pool.high_price_0 }}</td>
+                <td style="text-align: right;" style="text-align: right;">{{ pool.high_price_1 }}</td>
+                <td style="text-align: right;" style="text-align: right;">{{ pool.low_price_0 }}</td>
+                <td style="text-align: right;" style="text-align: right;">{{ pool.low_price_1 }}</td>
+                <td style="text-align: right;"
+                    style="text-align: right;">{{ pool.total_period_return }}</td>
+                <td style="text-align: right;" style="text-align: right;">{{ pool.yield_on_fees }}</td>
+                <td style="text-align: right;"
+                    style="text-align: right;">{{ pool.price_change_ret }}</td>
+                <td style="text-align: right;" style="text-align: right;">{{ pool.hodl_return }}</td>
+                <td style="text-align: right;" style="text-align: right;">{{ pool.fees_apy }}</td>
+                <td style="text-align: right;"
+                    style="text-align: right;">{{ pool.impermanent_loss_level }}</td>
+                <td style="text-align: right;"
+                    style="text-align: right;">{{ pool.impermanent_loss_impact }}</td>
+                <td style="text-align: right;" style="text-align: right;">{{ pool.volume }}</td>
+                <td style="text-align: right;" style="text-align: right;">{{ pool.open_reserve_0 }}</td>
+                <td style="text-align: right;" style="text-align: right;">{{ pool.open_reserve_1 }}</td>
+                <td style="text-align: right;"
+                    style="text-align: right;">{{ pool.close_reserve_0 }}</td>
+                <td style="text-align: right;"
+                    style="text-align: right;">{{ pool.close_reserve_1 }}</td>
+                <td style="text-align: right;" style="text-align: right;">{{ pool.poolsize }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

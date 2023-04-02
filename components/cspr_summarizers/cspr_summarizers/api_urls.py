@@ -1,7 +1,7 @@
 from django.urls import include, path, re_path
-'''
+
 try:
-    from api_views import *
+    from ..cspr_summarizers.api_views import *
 except:
     from cspr_api.api_views import *
 
@@ -19,4 +19,3 @@ urlpatterns = [
     re_path(r'^remove_liquidity/', RemoveLiquidityAPIView.as_view(), name='Remove Liquidity'),
 
 ]
-'''

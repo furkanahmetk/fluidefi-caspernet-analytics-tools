@@ -16,9 +16,13 @@ ALLOWED_HOSTS = ['*', ]
 
 
 # Application definition
-
 INSTALLED_APPS = [
+    'cspr_summarization',
     'cspr_summarizers',
+    'data_servers',
+    'filters',
+    'liquidity_pools',
+    'search',
     'rest_framework',
     'rest_framework.authtoken',
     'drf_spectacular',
@@ -59,23 +63,11 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
-            # 'libraries': {
-            #     'string_replace': 'templatetags.string_replace',
-            #     'has_group': 'templatetags.group_filter_tag',
-            #     'escape_string': 'templatetags.escape_tag',
-            #     'account_initialized': 'templatetags.account_init_tag',
-            #     'allow_product_subscription': 'templatetags.allow_product_subscription',
-            #     'account_configured': 'templatetags.account_configured_tag',
-            #     'max_calls': 'templatetags.max_calls_tag',
-            #     'multiplication': 'templatetags.multiplication_tag',
-            #     'allow_local_host': 'templatetags.local_host_tag',
-            # }
         },
     },
 ]
 
 WSGI_APPLICATION = 'cspr_summarizers.wsgi.application'
-
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -99,7 +91,6 @@ DATABASES = {
     }
 }
 
-
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -118,33 +109,44 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
-# https://docs.djangoproject.com/en/4.1/topics/i18n/
-
+# https://docs.djangoproject.com/en/3.1/topics/i18n/
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
-USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/4.1/howto/static-files/
-
-STATIC_URL = 'static/'
+USE_L10N = True
+USE_THOUSAND_SEPARATOR = True
+USE_TZ = False
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/4.1/howto/static-files/
+STATIC_URL = '/static/'
+# print("STATIC_URL: ", STATIC_URL)
 
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
+# print("STATICFILES_DIRS: ", STATICFILES_DIRS)
+
+# point webserver to this directory AFTER running ./manage.py collectstatic
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+# print("STATICFILES_DIRS: ", STATIC_ROOT)
 
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+        'rest_framework.permissions.IsAuthenticated'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication'
+    ),
+    'DEFAULT_PARSER_CLASSES': [
+        'rest_framework.parsers.JSONParser',
     ],
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'STRICT_JSON': False,
@@ -153,5 +155,5 @@ REST_FRAMEWORK = {
 SPECTACULAR_SETTINGS = {
     'TITLE': 'FLUIDEFI API Documentation',
     'VERSION': '0.10',
-    'AUTHENTICATION_WHITELIST': ['rest_framework.authentication.TokenAuthentication'],
+    # 'AUTHENTICATION_WHITELIST': ['rest_framework.authentication.TokenAuthentication'],
 }

@@ -60,7 +60,7 @@ def run_hourly_summarizer(start_hour_param = None):
   while (last_hourly_block_timestamp > next_start_hour) or (forced_to_run):
 
     summarizer = LpHourlySummarizer(next_start_hour, next_end_hour)
-    # Initilize Data (all column at 0)
+    # Initialize Data (all column at 0)
     summarizer.init_hourly_data()
     logging.info(f'🧮 Hourly Summarization started {next_start_hour} - {next_end_hour}...')
 
