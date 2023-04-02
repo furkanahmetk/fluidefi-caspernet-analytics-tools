@@ -3,7 +3,8 @@ sys.dont_write_bytecode = True
 
 # Django specific settings
 import os
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'cspr_summarizers.settings')
+# os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'settings')
 import django
 django.setup()
 from cspr_summarization.entities.BlockSummary import BlockSummary
