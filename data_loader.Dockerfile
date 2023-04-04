@@ -22,11 +22,10 @@ ENV WRITE_DB_CONNECTION_PORT=$WRITE_DB_CONNECTION_PORT
 
 
 # Copy the script into the container
-COPY ./cspr_summarization/services/dump_data_loader/script.sh .
+COPY ./data_loader-script.sh .
 
 # Set the script as executable
-RUN chmod +x ./script.sh
+RUN chmod +x ./data_loader-script.sh
 
 # Run the script when the container starts
-ENTRYPOINT ["/bin/sh", "-c", "./script.sh"]
-
+ENTRYPOINT ["/bin/sh", "-c", "./data_loader-script.sh"]

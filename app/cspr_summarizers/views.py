@@ -4,7 +4,7 @@ from django.shortcuts import render
 
 
 def index(request):
-        trending_pools = get_lp_list3(request.user, lp_cnt=10, data_frequency="t1d", option="-total_apy")
+        trending_pools = get_lp_list3(request.user, lp_cnt=10, data_frequency="t30", option="-total_apy")
 
         context = {
             'trending_pools': trending_pools

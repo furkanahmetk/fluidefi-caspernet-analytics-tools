@@ -151,7 +151,7 @@ class search_lp(APIView):
 
         # First, get a list of liquidity pools using below
         lp_ids = search_lps(param)
-        print(f"{param} found {lp_ids}")
+        # print(f"{param} found {lp_ids}")
 
         # Did not find any pools, check for dead ones
         if lp_ids is None:
@@ -167,7 +167,7 @@ class search_lp(APIView):
         # Go get results
         results_list = get_lp_list3(username=request.user, lp_cnt=param2, data_frequency=data_frequency,
                                     option="search", lp_ids=lp_ids)
-        print(results_list)
+        # print(results_list)
 
         if len(results_list) == 0:
             try:

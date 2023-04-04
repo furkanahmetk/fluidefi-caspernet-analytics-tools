@@ -8,8 +8,8 @@ services:
   data_loader:
     image: fluidefi-data_loader
     build:
-      context: ./components/cspr_summarizers
-      dockerfile: cspr_summarization/services/dump_data_loader/Dockerfile
+      context: .
+      dockerfile: data_loader.Dockerfile
     container_name: fluidefi-data_loader
     networks:
       - fluidefi-net
@@ -22,4 +22,4 @@ services:
       - WRITE_DB_CONNECTION_PASSWORD=$WRITE_DB_CONNECTION_PASSWORD
       - WRITE_DB_CONNECTION_PORT=$WRITE_DB_CONNECTION_PORT
     volumes:
-      - ./dump_data.sql:/usr/src/app/dump_data.sql
+      - ./dump_data:/usr/src/app/dump_data

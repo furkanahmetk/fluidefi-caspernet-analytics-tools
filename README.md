@@ -42,9 +42,9 @@ python3 get-pip.py
 ```
 4. Install the required Python packages using pip
 ``` 
-python3 -m pip install -r components/api/requirements.txt
+python3 -m pip install -r app/requirements.txt
 ```
-5. Set environment variables for a database connection or update `settings.py` with database connection information.
+5. Set environment variables for a database connection or update `app/cspr_summarizers/settings.py` with database connection information.
 
 For example:
 ```
@@ -70,7 +70,7 @@ DATABASES = {
 
 6. Run migrations to create the tables
 ``` 
-python manage.py migrate
+python app/manage.py migrate
 ```
 or alternatively create them manually by running [this script](./docs/queries.sql).
 
@@ -78,10 +78,10 @@ or alternatively create them manually by running [this script](./docs/queries.sq
 
 1. Run one or both of the services
 ``` 
-~/fluidefi-caspernet-analytics-tools/components/cspr_summarizers$ python3 block_summarizer.py
+~/fluidefi-caspernet-analytics-tools/app$ python3 block_summarizer.py
 ```
 ```
-~/fluidefi-caspernet-analytics-tools/components/cspr_summarizers$ python3 hourly_summarizer.py
+~/fluidefi-caspernet-analytics-tools/app$ python3 hourly_summarizer.py
 ```
 
 ### Testing:

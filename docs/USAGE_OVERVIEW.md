@@ -13,17 +13,29 @@ Open your preferred database viewer and explore that the different tables have d
 
 - As an alternative to the last point above (`have casper-aggregator already run`), you can just simply import the dump data (the output of the aggregator).<br>
 To do that make sure to:
-  1. Have the `dump_data.sql` file at the root level of the directory (at the same level where you have the `docker-compose.yml` file - and the filename should be `dump_data.sql`).
-  2. run this command to import the data `docker compose -f docker-compose.data-loader.yml up`.
+  1. Place the DB dump folder at the root level of the directory (at the same level where you have the `docker-compose.yml` file) - and make sure to rename the folder to `dump_data`.
+  2. Copy configuration example to new file `cp .env.example .env`
+  3. Replace the DB envirnoment variable values (that you will find inside the `.env` file) with the credentials of the running data base.
+  4. Run this command to import the data `docker compose -f docker-compose.data-loader.yml up`.
+  5. Once the step 4. above is done, all tables and data needed for the services should be populated. To check that open your DB with your prefered DB Viewer and check there that you've all tables.
 
 
 
 ## Actions to do
-- clone repository: `git clone https://github.com/fluidefi/fluidefi-caspernet-analytics-tools.git`
-- change the working directory: `cd fluidefi-caspernet-analytics-tools`
-- copy configuration example to new file `cp .env.example .env`
-- replace the envirnoment variable values (that you will find inside the `.env` file) with the credentials of the running data base.
-- start the services: `docker compose up`: This command will create the database tables needed on this service and then starts the services
+- Clone repository: `git clone https://github.com/fluidefi/fluidefi-caspernet-analytics-tools.git`
+- Change the working directory: `cd fluidefi-caspernet-analytics-tools`
+- Copy configuration example to new file `cp .env.example .env`
+- Replace the envirnoment variable values (that you will find inside the `.env` file) with the credentials of the running data base.
+- Build the common shared image (This step will speed up the build time of the services - build once and use it elsewhere): <br>
+```
+docker build  -f ./app/fluidefi-app.Dockerfile -t fluidefi-app  ./app
+```
+- Start the services: <br>
+```
+docker compose up
+```
+ This command will create the database tables needed on this service and then starts the services.
+- Once the last step above is done then the app should be accessible at http://0.0.0.0:8080/ 
 
 
 ## Clean from previous runs
@@ -50,15 +62,15 @@ In order to run the `data_server`, `exchange_rate_populator`, and `lp_summary_po
 Then run the following commands: 
 1. First we should build a common shared image between the services. This step will speed up the build time of the services (build once and use it elsewhere)<br>
 ```
-docker build  -f ./components/cspr_summarizers/data_servers/fluideFi-metrics.Dockerfile -t fluidefi-metrics ./components/cspr_summarizers/data_servers 
+docker build  -f ./app/data_servers/fluideFi-metrics.Dockerfile -t fluidefi-metrics ./app/data_servers 
 ```
 2. Once the step 1 is done, we can start the services by running this command: <br>
 ```
-docker compose -f ./components/cspr_summarizers/data_servers/docker-compose.yml up  
+docker compose -f ./app/data_servers/docker-compose.yml up  
 ```
 
 ## Clean from previous runs
 To cleanup containers, volumes and networks from previous runs, run this command: 
-- `docker compose -f ./components/data_servers/docker-compose.yml down --volumes`
+- `docker compose -f ./app/data_servers/docker-compose.yml down --volumes`
 After that remove the `.env` file, previously created, by running this command:
 - `rm .env`

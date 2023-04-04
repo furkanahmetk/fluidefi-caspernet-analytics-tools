@@ -16,7 +16,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     env_file:
-      - ../../../.env
+      - ../../.env
 
   exchange_rate_populator:
     image: fluidefi-exchange_rate_populator
@@ -29,7 +29,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     env_file:
-      - ../../../.env
+      - ../../.env
 
   data_server:
     image: fluidefi-data_server
@@ -42,4 +42,4 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     env_file:
-      - ../../../.env
+      - ../../.env
