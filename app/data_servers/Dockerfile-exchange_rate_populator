@@ -1,0 +1,8 @@
+FROM fluidefi-metrics
+
+# copy entrypoint services files
+COPY ./exchange_rate.py ./exchange_rate.py
+COPY ./exchange_rate_populator.py ./exchange_rate_populator.py
+
+
+ENTRYPOINT [ "python3", "exchange_rate_populator.py" ]

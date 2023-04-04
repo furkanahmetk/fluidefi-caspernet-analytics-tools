@@ -1,0 +1,77 @@
+{% load i18n static %}
+<!DOCTYPE html>
+{% get_current_language as LANGUAGE_CODE %}{% get_current_language_bidi as LANGUAGE_BIDI %}
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    {% block title %}<title>DeFi analytics & portfolio management</title>{% endblock %}
+
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static 'img/favicon/apple-touch-icon.png' %}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static 'img/favicon/favicon-32x32.png' %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static 'img/favicon/favicon-16x16.png' %}">
+    <link rel="mask-icon" href="{% static 'img/favicon/safari-pinned-tab.svg' %}" color="#5bbad5">
+
+    {% block blockbots %}
+        <meta name="robots" content="NONE,NOARCHIVE">{% endblock %}
+    <!-- Add CSS in static file -->
+    {% load static %}
+    <meta http-equiv="cache-control" content="no-cache, must-revalidate, post-check=0, pre-check=0"/>
+    <meta http-equiv="cache-control" content="max-age=0"/>
+    <meta http-equiv="pragma" content="no-cache"/>
+    <meta property="og:type" content="website">
+</head>
+
+<body style="background-color: #111317;">
+<!-- Sidebar -->
+<div style="width: 100%; display: table;">
+    <div style="display: table-row; height: 100%">
+        <div style="display: table-cell">
+            <ul style="list-style-type: none; background-color: #111317; color: white; margin-left: 5px; margin-right: 45px;">
+                <li style="margin-bottom: 15px;">
+                    <a style="color: white; text-decoration: none;" href="{% url 'index' %}" title="Dashboard">Dashboard</a>
+                </li>
+                <li style="margin-bottom: 15px;">
+                    <a style="color: white; text-decoration: none;" href="#" title="Coming in Milestone 4.">Favorites</a>
+                </li>
+                <li style="margin-bottom: 15px;">
+                    <a style="color: white; text-decoration: none;" href="#" title="Coming in Milestone 4.">Models</a>
+                </li>
+                <li style="margin-bottom: 15px;">
+                    <a style="color: white; text-decoration: none;" href="{% url 'rapidoc' %}" title="API Documentation.">API Docs</a>
+                </li>
+            </ul>
+            <p style="color: white"><br/><br/>API Call<br/>Examples:</p>
+            <p><a style="color: white; text-decoration: none;" href="/lp/trans/10/30/" target="_blank" title="Show the top 10 liquidity pools with the most transactions in the past 30 days" >- LPs by Transactions</a></p>
+            <br/>
+            <p><a style="color: white; text-decoration: none;" href="/search_lp/wcspr/5/7/" target="_blank" title="Search for up to 5 liquidity pools that contain WCSPR & display 7 days returns" >- Search WCSPR</a></p>
+            <br/>
+            <p><a style="color: white; text-decoration: none;" href="/filters/" target="_blank" title="Display current users filters" >- Filters</a></p>
+        </div>
+
+        <!-- Content Wrapper -->
+        <div style="display: table-cell;">
+            <!-- Main Content -->
+            <div id="content">
+                <!-- Begin Page Content -->
+                <div>
+                    {% block content %}{% endblock %}
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- End of Main Content -->
+
+            <p style="text-align: center; color: white; margin-top: 40px;">THE CONTENT OF THIS WEBSITE DOES NOT CONSTITUTE INVESTMENT
+                ADVICE,
+                FINANCIAL
+                ADVICE, TRADING ADVICE, OR ANY OTHER ADVICE.</p>
+            <p style="text-align: center; color: white;">&copy; Copyright Notice.</p>
+        </div>
+        <!-- End of Content Wrapper -->
+    </div>
+</div>
+</body>
+</html>

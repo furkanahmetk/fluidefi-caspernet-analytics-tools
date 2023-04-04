@@ -1,6 +1,5 @@
 ## Installation
 
-
 ### Development Setup
 
 Clone the repo:
@@ -18,10 +17,10 @@ git checkout develop
 
 #### Installing CSPR Summarizers
 
-navigate to components/cspr_summarizers
+navigate to app
 
 ```bash
-cd components/cspr_summarizers
+cd app
 ```
 
 Create a new python virtual environment and activate the environment
@@ -55,10 +54,10 @@ or alternatively create them manually by running [this script](./docs/queries.sq
 
 Lastly, run the summarizers
 
-Navigate back to components/cspr_summarizers
+Navigate back to app
 
 ```bash
-cd components/cspr_summarizers
+cd app
 ```
 
 and run the services
@@ -73,23 +72,17 @@ python3 hourly_summarizer.py
 
 #### Installing the API
 
-similarly to CSPR Summarizers installation, navigate to components/api
+similarly to CSPR Summarizers installation, navigate to api
 
 ```bash
-cd components/api
+cd api
 ```
 
-Create a new python virtual environment and activate the environment
+Activate the previously created virtual environment:
 
 ```
 python3 -m venv venv
 activate venv/source/bin
-```
-
-Install dependencies into virtual environment
-
-```
-python3 -m pip install -r requirements.txt
 ```
 
 The environment setup for the API was already included with CSPR Summarizers environment setup.
@@ -99,6 +92,14 @@ Run migrations to create the tables
 ```
 python manage.py migrate
 ```
+
+For authentication, you will need to create a supper user by running:
+
+```
+python3 manage.py createsuperuser
+```
+
+You will be asked to fill in username, email, and password.
 
 Lastly, run the app
 
@@ -121,4 +122,3 @@ Now, you can run the two applications, summarizers and api, by simply running:
 ```bash
 docker compose up --build
 ```
-

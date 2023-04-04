@@ -1,0 +1,45 @@
+version: "3.7"
+
+networks:
+  fluidefi-net:
+    driver: bridge
+
+services:
+  lp_summary_populator:
+    image: fluidefi-lp_summary_populator
+    build:
+      context: ./
+      dockerfile: ./Dockerfile-lp_summary_populator
+    container_name: fluidefi-lp_summary_populator
+    networks:
+      - fluidefi-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - ../../.env
+
+  exchange_rate_populator:
+    image: fluidefi-exchange_rate_populator
+    build:
+      context: ./
+      dockerfile: ./Dockerfile-exchange_rate_populator
+    container_name: fluidefi-exchange_rate_populator
+    networks:
+      - fluidefi-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - ../../.env
+
+  data_server:
+    image: fluidefi-data_server
+    build:
+      context: ./
+      dockerfile: ./Dockerfile-data_server
+    container_name: fluidefi-data_server
+    networks:
+      - fluidefi-net
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    env_file:
+      - ../../.env
